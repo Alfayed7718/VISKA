@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Viska - belajar Bahasa Jawa dan unggah-ungguh dengan cara menyenangkan." />
+  <title>Viska — Belajar Bahasa Jawa</title>
+  <script src="./public/auth.js"></script>
+  <script>
+    // Halaman pembelajaran hanya dapat dibuka setelah sesi akun Viska tersedia.
+    window.ViskaAuth.requireAuth();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Config warna dan box-shadow kustom Tailwind CSS
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { leaf: '#386641', ink: '#212121', sky: '#1E3A2B', sun: '#C88A35', coral: '#A0522D', mint: '#F4F1EA' },
+          boxShadow: { button: '0 8px 22px #1E3A2B26', skybutton: '0 8px 22px #1E3A2B26', redbutton: '0 8px 22px #A0522D26', sunbutton: '0 8px 22px #C88A3533' }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] {
+      display: none;
+    }
+
+    /* Tata visual keraton: gading, nila, emas, dan maroon. */
+    body {
+      background-color: #FBF9F5 !important;
+      background-image: radial-gradient(#C88A3520 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    header,
+    .viska-nav {
+      background: #FDFBF7 !important;
+      border-color: #e4ded4 !important;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Inter', Arial, sans-serif;
+      letter-spacing: -.02em;
+    }
+
+    .tab-panel>div {
+      animation: fade-in .35s ease both;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .btn-3d {
+      transform: none;
+      transition: filter .15s, box-shadow .15s;
+    }
+
+    .btn-3d:hover {
+      filter: brightness(1.06);
+    }
+
+    /* Animasi Roda Spin */
+    .spin-wheel {
+      background: conic-gradient(#1E3A2B 0 45deg, #3D2314 45deg 90deg, #1E3A2B 90deg 135deg, #3D2314 135deg 180deg, #1E3A2B 180deg 225deg, #3D2314 225deg 270deg, #1E3A2B 270deg 315deg, #3D2314 315deg);
+    }
+
+    .wheel-spinning {
+      animation: spin 1.05s cubic-bezier(.15, .75, .2, 1) both;
+    }
+
+    .asset-icon-frame {
+      display: inline-grid;
+      place-items: center;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .asset-icon-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: none;
+    }
+
+    .avatar-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Avatar di papan score mengikuti kosmetik profil pemain. */
+    .ranking-avatar {
+      display: grid;
+      width: 3.25rem;
+      height: 3.25rem;
+      flex: 0 0 auto;
+      place-items: center;
+      overflow: hidden;
+      border: 4px solid var(--avatar-border, #4338ca);
+      border-radius: 9999px;
+      background: var(--avatar-background, #386641);
+      box-shadow: 0 2px 8px rgb(33 33 33 / .16);
+    }
+
+    .rank-showcase,
+    #tab-ranking > div > .mt-6 > div {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: .75rem;
+      align-items: center;
+      min-height: 6.5rem;
+      padding-left: 5.4rem;
+      background-image: var(--rank-image);
+      background-repeat: no-repeat;
+      background-position: 1rem center;
+      background-size: 4rem;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .rank-showcase:hover,
+    #tab-ranking > div > .mt-6 > div:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgb(33 33 33 / .08);
+    }
+
+    #tab-ranking > div > .mt-6 > div:nth-child(1) { --rank-image: url('aset/logo_rank_mangarah_tari.png'); }
+    #tab-ranking > div > .mt-6 > div:nth-child(2) { --rank-image: url('aset/logo_rank_prajurit.png'); }
+    #tab-ranking > div > .mt-6 > div:nth-child(3) { --rank-image: url('aset/logo_rank_raja_jawa.png'); }
+
+    .rank-showcase img {
+      width: 4rem;
+      height: 4rem;
+      object-fit: contain;
+    }
+
+    .ranking-title-badge {
+      display: inline-grid;
+      width: 3rem;
+      height: 3rem;
+      flex: 0 0 auto;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgb(255 255 255 / .7);
+      border-radius: .9rem;
+      background: var(--title-background, #fff8e8);
+      box-shadow: 0 3px 10px rgb(33 33 33 / .1);
+    }
+
+    .ranking-title-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    @media (max-width: 420px) {
+      .ranking-avatar { width: 2.75rem; height: 2.75rem; border-width: 3px; }
+      .ranking-title-badge { display: none; }
+    }
+
+    .rank-up-card { animation: rank-up-pop .42s cubic-bezier(.2, 1.25, .4, 1) both; }
+
+    @keyframes rank-up-pop {
+      from { opacity: 0; transform: scale(.78) translateY(24px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Saat permainan berlangsung, area belajar mendapat ruang penuh tanpa navigasi. */
+    body.game-focus .viska-nav {
+      display: none;
+    }
+
+    /* Seluruh aset PNG mempertahankan rasio asli dan terlihat utuh di frame-nya. */
+    img[src$=".png"] {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(1080deg);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding-left: 15rem;
+        background: #FBF9F5;
+      }
+
+      body.game-focus {
+        padding-left: 0;
+      }
+
+      header {
+        left: 15rem;
+      }
+
+      body.game-focus header {
+        left: 0;
+      }
+
+      .viska-nav {
+        top: 0;
+        bottom: 0;
+        width: 15rem;
+        right: auto;
+        border-right: 2px solid #ead9b6;
+        border-top: 0;
+        background: #1E3A2B;
+      }
+
+      .viska-nav .tab-button {
+        color: #000000;
+      }
+
+      .viska-nav .tab-button.text-leaf {
+        color: #E6B800 !important;
+        background: #ffffff12;
+      }
+
+      .viska-nav>div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        max-width: none;
+        padding: 6rem 1rem 1rem;
+        gap: .4rem;
+      }
+
+      .viska-nav .tab-button {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: .8rem;
+        border-radius: .8rem;
+        padding: .85rem 1rem;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[#f7f7f7] font-sans text-ink">
+  <div class="min-h-screen">
+
+    <!-- ========================================== -->
+    <!-- HEADER & INDIKATOR STATISTIK UTAMA         -->
+    <!-- ========================================== -->
+    <header class="sticky top-0 z-30 border-b-2 border-slate-100 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        <a href="#" class="flex items-center gap-2.5" onclick="switchTab('belajar'); return false;">
+          <span class="text-xl font-extrabold tracking-tight text-leaf">Viska</span>
+        </a>
+
+        <!-- Stats Bar Header -->
+        <div class="flex items-center gap-4 text-sm font-bold">
+          <div class="flex items-center gap-1.5 text-sun"><span class="asset-icon-frame h-6 w-6"><img src="aset/XP.png"
+                alt="XP"></span><span id="header-score">0
+              XP</span></div>
+          <div class="flex items-center gap-1.5 text-amber-500"><span class="asset-icon-frame h-8 w-6"><img
+                src="aset/Coins.png" alt="Koin"></span><span id="header-coins">0</span></div>
+          <div id="user-header-profile" class="flex items-center gap-2">
+            <button onclick="openLoginModal()" id="login-btn"
+              class="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600 hover:bg-slate-200">Masuk</button>
+            <div id="user-avatar-badge"
+              class="hidden h-9 w-10 cursor-pointer place-items-center rounded-full border-2 border-sky bg-sky font-extrabold text-white grid"
+              onclick="switchTab('profil')"><img class="avatar-photo" src="aset/foto_batik.png" alt="Foto profil"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-4 pb-28 pt-7 sm:px-6">
+
+      <!-- ========================================== -->
+      <!-- TAB 1 - BELAJAR (MODE UTAMA / QUIZ)        -->
+      <!-- ========================================== -->
+      <section id="tab-belajar" class="tab-panel">
+        <div id="learning-map">
+          <div class="mb-8">
+            <p class="text-sm font-bold uppercase tracking-[.16em] text-sky">Jalur Belajarmu</p>
+            <h1 class="mt-1 text-3xl font-extrabold sm:text-4xl">Naik level, sedikit demi sedikit.</h1>
+            <p class="mt-2 text-slate-500">Selesaikan latihan untuk membuka pelajaran berikutnya.</p>
+          </div>
+          <div id="level-buttons-container"
+            class="relative mx-auto max-w-xl space-y-7 py-3 before:absolute before:left-1/2 before:top-6 before:h-[calc(100%-3rem)] before:w-2 before:-translate-x-1/2 before:rounded-full before:bg-slate-200">
+            <button onclick="startLesson(0)"
+              class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 border-[#5e351c] bg-leaf text-white shadow-button hover:brightness-105">
+              <span class="text-3xl">1</span><span class="mt-1 text-xs font-black"></span>
+            </button>
+            <button onclick="startLesson(1)"
+              class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 border-[#235248] bg-sky text-white shadow-skybutton hover:brightness-105">
+              <span class="text-3xl">2</span><span class="mt-1 text-xs font-black"></span>
+            </button>
+            <button onclick="startLesson(2)"
+              class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 border-[#ae7621] bg-sun text-white shadow-sunbutton hover:brightness-105">
+              <span class="text-3xl">3 </span><span class="mt-1 text-xs font-black"></span>
+            </button>
+            <button onclick="startLesson(3)"
+              class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 border-[#741f31] bg-sky text-white shadow-skybutton"><span
+                class="text-3xl">4</span><span class="mt-1 text-xs font-black"></span></button>
+            <button onclick="startLesson(4)"
+              class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 border-[#6b3c22] bg-leaf text-white shadow-button"><span
+                class="text-3xl">5</span><span class="mt-1 text-xs font-black"></span></button>
+          </div>
+          <p class="mt-8 text-center text-sm font-bold text-slate-400">Ketuk level untuk memulai latihan</p>
+        </div>
+
+        <!-- Area Soal / Quiz Belajar -->
+        <div id="quiz-area" class="mx-auto hidden max-w-2xl">
+          <div class="mb-7 flex items-center gap-4">
+            <button onclick="exitLesson()" class="text-2xl font-bold text-slate-400 hover:text-ink">×</button>
+            <div class="h-4 flex-1 overflow-hidden rounded-full bg-slate-200">
+              <div id="quiz-progress" class="h-full rounded-full bg-leaf transition-all duration-300"></div>
+            </div>
+            <div class="flex items-center gap-1 text-red-500"><span class="text-2xl">♥</span><b id="hearts">3</b></div>
+          </div>
+          <p id="quiz-label" class="mb-3 text-sm font-bold uppercase tracking-wider text-sky">Latihan</p>
+          <h2 id="quiz-question" class="text-2xl font-extrabold sm:text-3xl"></h2>
+          <div id="quiz-options" class="mt-7 grid gap-3"></div>
+          <div id="quiz-feedback" class="mt-6 hidden rounded-2xl p-5 font-bold"></div>
+          <button id="quiz-next" onclick="nextQuestion()"
+            class="btn-3d mt-5 hidden w-full rounded-2xl border-2 border-[#5e351c] bg-leaf py-4 font-extrabold uppercase tracking-wide text-white shadow-button">Lanjutkan</button>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2 - KAMUS BAHASA JAWA                  -->
+      <!-- ========================================== -->
+      <section id="tab-kamus" class="tab-panel hidden">
+        <div class="mb-8 rounded-3xl bg-gradient-to-br from-leaf to-[#79db27] p-7 text-white sm:p-10">
+          <p class="mb-2 text-sm font-bold uppercase tracking-[.18em] text-white/75">Kamus Undhak usuk basa</p>
+          <h1 class="max-w-xl text-3xl font-extrabold leading-tight sm:text-4xl">Temukan kata Jawa yang tepat.</h1>
+          <p class="mt-3 max-w-xl text-white/85">Pelajari kosakata Ngoko, Krama Madya, dan Krama Inggil.</p>
+          <label class="mt-6 flex max-w-2xl items-center gap-3 rounded-2xl bg-white px-4 py-3.5 text-ink shadow-lg"
+            for="search-input">
+            <span class="text-xl">⌕</span>
+            <input id="search-input" oninput="renderDictionary()" class="w-full outline-none placeholder:text-slate-400"
+              placeholder="Cari kata Jawa atau Indonesia..." autocomplete="off" />
+          </label>
+          <button type="button" onclick="toggleLanguageGuide()"
+            class="mt-4 rounded-xl border-2 border-white/70 bg-white/15 px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-white hover:text-leaf">
+            Panduan
+          </button>
+        </div>
+        <aside id="language-guide" class="mb-8 hidden rounded-3xl border-2 border-[#dce7d1] bg-white p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4">
+            <div><p class="text-sm font-bold uppercase tracking-[.16em] text-leaf">Panduan singkat</p><h2 class="mt-1 text-2xl font-extrabold">Kapan memakai tiap tingkat bahasa?</h2></div>
+            <button type="button" onclick="toggleLanguageGuide()" class="text-2xl font-bold text-slate-400 hover:text-ink" aria-label="Tutup panduan">×</button>
+          </div>
+          <div class="mt-5 grid gap-3 md:grid-cols-2">
+            <article class="rounded-2xl bg-[#f4f1ea] p-4"><b class="text-leaf">Ngoko</b><p class="mt-1 text-sm leading-6 text-slate-600">Untuk teman sebaya, adik, atau suasana sangat akrab. Hindari kepada orang yang lebih tua atau dihormati.</p></article>
+            <article class="rounded-2xl bg-[#fff6df] p-4"><b class="text-[#9b6816]">Krama Madya</b><p class="mt-1 text-sm leading-6 text-slate-600">Pilihan sopan yang netral untuk orang yang belum terlalu akrab atau situasi sehari-hari yang formal.</p></article>
+            <article class="rounded-2xl bg-[#edf5f1] p-4"><b class="text-sky">Krama Inggil</b><p class="mt-1 text-sm leading-6 text-slate-600">Gunakan untuk berbicara dengan orang tua, guru, tamu, atau tokoh yang dihormati.</p></article>
+            <article class="rounded-2xl bg-[#fff1ed] p-4"><b class="text-coral">Tips</b><p class="mt-1 text-sm leading-6 text-slate-600">Mulailah dari lawan bicara dan situasinya. Bila ragu, gunakan Krama Madya atau Krama Inggil agar tetap santun.</p></article>
+          </div>
+        </aside>
+        <div id="dictionary-list" class="grid gap-4 md:grid-cols-2"></div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3 - SPIN MODE (GRATIS + ITEM BUFF)     -->
+      <!-- ========================================== -->
+      <section id="tab-spin" class="tab-panel hidden">
+        <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-start">
+          <!-- Sidebar Statistik Spin & Inventaris Item -->
+          <div class="rounded-3xl bg-[#253a2f] p-7 text-white sm:p-9">
+            <p class="text-sm font-bold uppercase tracking-[.16em] text-mint">Roda Jawa</p>
+            <h1 class="mt-2 text-3xl font-extrabold leading-tight">Berani putar, berani pintar</h1>
+            <p class="mt-3 leading-7 text-white/70">Jawab benar berturut-turut untuk mendapatkan XP & koin!</p>
+
+            <div class="mt-6 grid grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-white/10 p-3 text-center">
+                <p class="text-[10px] sm:text-xs font-bold uppercase text-white/55">XP Sesi</p>
+                <p id="spin-points" class="mt-1 text-2xl sm:text-3xl font-extrabold">0</p>
+              </div>
+              <div class="rounded-2xl bg-white/10 p-3 text-center">
+                <p class="text-[10px] sm:text-xs font-bold uppercase text-white/55">Koin Sesi</p>
+                <p id="spin-session-coins" class="mt-1 text-2xl sm:text-3xl font-extrabold text-amber-400">0</p>
+              </div>
+              <div class="rounded-2xl bg-white/10 p-3 text-center">
+                <p class="text-[10px] sm:text-xs font-bold uppercase text-white/55">Multiplier</p>
+                <p id="spin-multiplier" class="mt-1 text-2xl sm:text-3xl font-extrabold text-sun">1x</p>
+              </div>
+            </div>
+
+            <!-- Indikator Item Dari Toko -->
+            <div class="mt-4 grid grid-cols-2 gap-3">
+              <div class="rounded-2xl bg-white/10 p-3 flex items-center justify-between">
+                <span class="flex items-center gap-1 text-xs font-bold"><span class="asset-icon-frame h-7 w-5"><img
+                      src="aset/Skip.png" alt="Skip"></span>Skip Soal:</span>
+                <span id="inventory-skip" class="font-extrabold text-sun">0</span>
+              </div>
+              <div class="rounded-2xl bg-white/10 p-3 flex items-center justify-between">
+                <span class="flex items-center gap-1 text-xs font-bold"><span class="asset-icon-frame h-7 w-5"><img
+                      src="aset/Perisai.png" alt="Perisai"></span>Perisai:</span>
+                <span id="inventory-shield" class="font-extrabold text-sun">0</span>
+              </div>
+            </div>
+
+            <button id="cashout-btn" onclick="cashOut()" disabled
+              class="btn-3d mt-6 w-full rounded-2xl border-2 border-[#ae7621] bg-sun py-4 font-extrabold uppercase tracking-wide text-ink shadow-sunbutton disabled:cursor-not-allowed disabled:opacity-40">Klaim
+              XP & Koin Sesi</button>
+          </div>
+
+          <!-- Card Roda Spin Idle -->
+          <div id="spin-idle" class="rounded-3xl border-2 border-slate-200 bg-white p-7 text-center sm:p-10">
+            <div id="wheel-graphic"
+              class="spin-wheel relative mx-auto mb-8 grid h-52 w-52 place-items-center rounded-full border-[12px] border-white shadow-xl">
+              <div class="asset-icon-frame h-10 w-10 rounded-full bg-white shadow-inner">?</div>
+            </div>
+            <h2 class="text-2xl font-extrabold">Putar tantanganmu!</h2>
+            <p class="mt-2 text-slate-500">Ayo Uji <b class="text-leaf">Kemampuanmu</b></p>
+            <button id="spin-btn" onclick="spinQuestion()"
+              class="btn-3d mt-7 w-full max-w-sm rounded-2xl border-2 border-[#5e351c] bg-leaf py-4 text-lg font-extrabold uppercase tracking-widest text-white shadow-button">Putar
+              Roda</button>
+          </div>
+
+          <!-- Card Tantangan / Soal Spin -->
+          <div id="spin-question-card" class="hidden rounded-3xl border-2 border-slate-200 bg-white p-7 sm:p-10">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-bold uppercase text-sky">Tantangan Spin</p>
+                <p id="spin-difficulty" class="mt-1 text-xs font-extrabold"></p>
+              </div>
+              <button id="use-skip-btn" onclick="useSkipItem()"
+                class="hidden rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-extrabold text-slate-700 hover:bg-slate-100">
+                <span class="inline-flex items-center gap-1"><span class="asset-icon-frame h-7 w-5"><img
+                      src="aset/Skip.png" alt=""></span>Gunakan Skip (<span id="skip-btn-count">0</span>)</span>
+              </button>
+            </div>
+
+            <h2 class="mt-3 text-2xl font-extrabold sm:text-3xl">Apa arti kata <span id="spin-word"
+                class="text-leaf"></span>?</h2>
+            <div id="spin-options" class="mt-7 grid gap-3"></div>
+            <div id="spin-feedback" class="mt-5 hidden rounded-2xl p-5 font-bold"></div>
+            <button id="spin-next" onclick="spinQuestion()"
+              class="btn-3d mt-5 hidden w-full rounded-2xl border-2 border-[#235248] bg-sky py-4 font-extrabold uppercase text-white shadow-skybutton">Coba
+              Lagi</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4 - LEADERBOARD (RANKING)              -->
+      <!-- ========================================== -->
+      <section id="tab-ranking" class="tab-panel hidden">
+        <div class="mx-auto max-w-2xl">
+          <p class="text-sm font-bold uppercase tracking-[.16em] text-sky">Hall of fame</p>
+          <h1 id="ranking-rank-heading" class="mt-1 text-3xl font-extrabold">Papan Score</h1>
+          <p id="ranking-rank-description" class="mt-1 text-slate-500">Hanya akun Viska yang terdaftar di papan
+            peringkat.</p>
+          <div class="mt-6 grid gap-3 sm:grid-cols-3">
+            <div class="rounded-2xl border border-[#d8c4a4] bg-[#fff8e8] p-4"><b class="text-leaf">I · Mangarah Tari</b>
+            </div>
+            <div class="rounded-2xl border border-[#b9d9d2] bg-[#f0faf7] p-4"><b class="text-sky">II · Prajurit</b>
+            </div>
+            <div class="rounded-2xl border border-[#e9d08d] bg-[#fff9e6] p-4"><b class="text-[#a56b09]">III · Raja
+                Jawa</b>
+            </div>
+          </div>
+
+          <div id="ranking-list" class="mt-8 space-y-3">
+            <div class="w-1/3 rounded-2xl bg-slate-200 p-4 pt-6">
+              <div class="asset-icon-frame mx-auto h-15 w-12 rounded-full bg-slate-100"><img src="aset/rangking_2.png"
+                  alt="Peringkat 2"></div>
+            </div>
+            <div class="w-1/3 rounded-2xl border-2 border-sun bg-sun/20 p-4 pt-8">
+              <div class="asset-icon-frame mx-auto h-16 w-16 rounded-full bg-sun/20 shadow-md"><img
+                  src="aset/ranking.png" alt="Peringkat 1"></div>
+            </div>
+            <div class="w-1/3 rounded-2xl bg-amber-100 p-4 pt-4">
+              <div class="asset-icon-frame mx-auto h-10 w-10 rounded-full bg-amber-100"><img src="aset/rangking_3.png"
+                  alt="Peringkat 3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 5 - TOKO (SHOP ITEM)                   -->
+      <!-- ========================================== -->
+      <section id="tab-toko" class="tab-panel hidden">
+        <div class="mx-auto max-w-2xl">
+          <h1 class="text-3xl font-extrabold">Toko Viska</h1>
+          <p class="mt-1 text-slate-500">Gunakan koinmu untuk membeli kosmetik dan power-up.</p>
+
+          <div class="mt-7 border-t-2 border-[#ead9b6] pt-6">
+            <p class="text-sm font-bold uppercase tracking-[.16em] text-sky">Power-up Spin</p>
+            <p class="mt-1 text-sm text-slate-500">Bantuan sekali pakai untuk menjaga progres pada mode Spin.</p>
+          </div>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <!-- ITEM 1: ISI NYAWA -->
+
+            <!-- ITEM 2: SKIP SOAL SPIN -->
+            <div class="flex flex-col justify-between rounded-2xl border-2 border-slate-200 bg-white p-5">
+              <div>
+                <span class="asset-icon-frame h-17 w-14"><img src="aset/Skip.png" alt="Skip Soal"></span>
+                <h3 class="mt-3 text-lg font-extrabold">Skip Soal Spin</h3>
+                <p class="mt-1 text-sm text-slate-500">Lewati soal Spin yang sulit tanpa membatalkan streak atau
+                  membuang XP & koin.</p>
+              </div>
+              <button onclick="buyItem('skip_item', 15)"
+                class="btn-3d mt-4 w-full rounded-xl border-2 border-[#235248] bg-sky py-2.5 font-extrabold text-white shadow-skybutton">Beli
+                (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
+                    alt="Koin"></span> 15)</button>
+            </div>
+
+            <!-- ITEM 3: PERISAI Xp SPIN -->
+            <div class="flex flex-col justify-between rounded-2xl border-2 border-slate-200 bg-white p-5">
+              <div>
+                <span class="asset-icon-frame h-17 w-14"><img src="aset/Perisai.png" alt="Perisai"></span>
+                <h3 class="mt-3 text-lg font-extrabold">Perisai Pelindung</h3>
+                <p class="mt-1 text-sm text-slate-500">Melindungi XP & koin sesimu agar tidak hangus ketika salah
+                  menjawab 1x pada mode Spin.</p>
+              </div>
+              <button onclick="buyItem('shield_item', 25)"
+                class="btn-3d mt-4 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-2.5 font-extrabold text-ink shadow-sunbutton">Beli
+                (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
+                    alt="Koin"></span> 25)</button>
+            </div>
+
+          </div>
+        </div>
+        <div class="mt-8 border-t-2 border-[#ead9b6] pt-6">
+          <p class="text-sm font-bold uppercase tracking-[.16em] text-leaf">Kosmetik Profil</p>
+          <p class="mt-1 text-sm text-slate-500">Koleksi avatar dan border untuk identitas profilmu.</p>
+        </div>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <article class="rounded-2xl border-2 border-[#ead9b6] bg-[#fffaf0] p-5">
+            <div class="h-14 w-14 overflow-hidden rounded-full border-4 border-[#7a4b27]"><img class="avatar-photo"
+                src="aset/foto_kris.png" alt="Avatar Kris"></div>
+            <h3 class="mt-3 font-extrabold">Avatar Kris</h3>
+            <p class="mt-1 text-sm text-slate-500">Foto profil Kris yang dapat dibeli pertama.</p><button
+              id="shop-avatar_kris" onclick="buyCosmetic('avatar_kris')"
+              class="btn-3d mt-4 w-full rounded-xl border-2 border-[#5e351c] bg-leaf py-2.5 font-extrabold text-white shadow-button">Beli
+              (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
+                  alt="Koin"></span> 35)</button>
+          </article>
+          <article class="rounded-2xl border-2 border-[#ead9b6] bg-[#fffaf0] p-5">
+            <div class="h-14 w-14 overflow-hidden rounded-full border-4 border-[#d89a35]"><img class="avatar-photo"
+                src="aset/foto_wayang.png" alt="Avatar Wayang"></div>
+            <h3 class="mt-3 font-extrabold">Avatar Wayang</h3>
+            <p class="mt-1 text-sm text-slate-500">Foto profil Wayang sebagai koleksi terakhir.</p><button
+              id="shop-avatar_wayang" onclick="buyCosmetic('avatar_wayang')"
+              class="btn-3d mt-4 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-2.5 font-extrabold text-ink shadow-sunbutton">Beli
+              (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
+                  alt="Koin"></span> 70)</button>
+          </article>
+          <article class="rounded-2xl border-2 border-[#ead9b6] bg-[#fffaf0] p-5">
+            <div class="h-14 w-14 rounded-full border-4 border-[#d89a35] bg-[#fff8e8] shadow-inner"></div>
+            <h3 class="mt-3 font-extrabold">Border Emas</h3>
+            <p class="mt-1 text-sm text-slate-500">Bingkai emas untuk profilmu.</p><button id="shop-border_emas"
+              onclick="buyCosmetic('border_emas')"
+              class="btn-3d mt-4 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-2.5 font-extrabold text-ink shadow-sunbutton">Beli
+              (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
+                  alt="Koin"></span> 30)</button>
+          </article>
+          <article class="rounded-2xl border-2 border-[#ead9b6] bg-[#fffaf0] p-5">
+            <div class="h-14 w-14 rounded-full border-4 border-[#2f6d62] bg-[#e1f2e8] shadow-inner"></div>
+            <h3 class="mt-3 font-extrabold">Border Giok</h3>
+            <p class="mt-1 text-sm text-slate-500">Bingkai giok yang langka.</p><button id="shop-border_jade"
+              onclick="buyCosmetic('border_jade')"
+              class="btn-3d mt-4 w-full rounded-xl border-2 border-[#235248] bg-sky py-2.5 font-extrabold text-white shadow-skybutton">Beli
+              (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
+                  alt="Koin"></span> 55)</button>
+          </article>
+        </div>
+
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 6 - PROFIL PENGGUNA                    -->
+      <!-- ========================================== -->
+      <section id="tab-profil" class="tab-panel hidden">
+        <div class="mx-auto max-w-xl rounded-3xl border-2 border-slate-200 bg-white p-7 text-center">
+          <div id="profile-avatar"
+            class="mx-auto grid h-24 w-24 place-items-center overflow-hidden rounded-full border-4 border-slate-100 bg-sky text-4xl font-extrabold text-white">
+            <img class="avatar-photo" src="aset/foto_batik.png" alt="Foto profil">
+          </div>
+          <h2 id="profile-name" class="mt-4 text-2xl font-extrabold">Pengguna Viska</h2>
+          <span id="profile-title"
+            class="mt-1 inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-extrabold text-slate-500">Pembelajar
+            Pemula</span>
+
+          <div class="mt-8 grid grid-cols-2 gap-4">
+            <div class="rounded-2xl border-2 border-slate-100 p-4">
+              <p class="flex items-center justify-center gap-1 text-xs font-bold uppercase text-slate-400"><span
+                  class="asset-icon-frame h-7 w-5"><img src="aset/XP.png" alt="XP"></span>Total XP</p>
+              <p id="profile-xp" class="mt-1 text-2xl font-black text-sun">0 XP</p>
+            </div>
+            <div class="rounded-2xl border-2 border-slate-100 p-4">
+              <p class="flex items-center justify-center gap-1 text-xs font-bold uppercase text-slate-400"><span
+                  class="asset-icon-frame h-7 w-5"><img src="aset/Coins.png" alt="Koin"></span>Koin</p>
+              <p id="profile-coins" class="mt-1 text-2xl font-black text-amber-500">0</p>
+            </div>
+          </div>
+
+          <div class="mt-6 rounded-2xl bg-[#fff8e8] p-5 text-left">
+            <div class="flex items-center justify-between"><b id="profile-rank-level" class="text-leaf">Rank I ·
+                Mangarah Tari</b><span id="rank-progress-text" class="text-sm font-bold text-slate-500">0 / 501 XP</span>
+            </div>
+            <div class="mt-3 h-3 overflow-hidden rounded-full bg-[#ead9b6]">
+              <div id="rank-progress-bar" class="h-full rounded-full bg-gradient-to-r from-leaf to-sun"
+                style="width:0%"></div>
+            </div>
+            <p id="rank-progress-hint" class="mt-2 text-sm text-slate-500">Kumpulkan XP untuk naik pangkat.</p>
+          </div>
+          <div class="mt-6 text-left">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Koleksi kosmetik</p>
+            <div id="profile-collection" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="mt-6 grid gap-5 text-left sm:grid-cols-2">
+            <div class="rounded-2xl border-2 border-[#ead9b6] bg-[#fffaf0] p-4">
+              <p class="text-xs font-bold uppercase tracking-wider text-leaf">Pilih foto profil</p>
+              <div id="avatar-picker" class="mt-3 flex flex-wrap gap-2"></div>
+            </div>
+            <div class="rounded-2xl border-2 border-[#ead9b6] bg-[#fffaf0] p-4">
+              <p class="text-xs font-bold uppercase tracking-wider text-leaf">Pilih border</p>
+              <div id="border-picker" class="mt-3 flex flex-wrap gap-2"></div>
+            </div>
+          </div>
+
+          <button onclick="logout()" id="logout-btn"
+            class="mt-8 text-sm font-extrabold text-coral hover:underline">Keluar Akun</button>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="rank-up-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="rank-up-title">
+      <div class="rank-up-card w-full max-w-sm rounded-3xl border-2 border-[#e9d08d] bg-[#fffaf0] p-7 text-center shadow-2xl">
+        <p class="text-xs font-extrabold uppercase tracking-[.18em] text-[#a56b09]">Gelar baru terbuka</p>
+        <img id="rank-up-image" class="mx-auto mt-4 h-28 w-28 object-contain" src="aset/logo_rank_prajurit.png" alt="">
+        <h2 id="rank-up-title" class="mt-3 text-2xl font-black text-leaf">Selamat!</h2>
+        <p id="rank-up-description" class="mt-2 text-slate-600"></p>
+        <button type="button" onclick="closeRankUpModal()" class="btn-3d mt-6 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-3 font-extrabold text-ink shadow-sunbutton">Lanjutkan</button>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- BOTTOM NAVIGATION BAR                      -->
+    <!-- ========================================== -->
+    <nav class="viska-nav fixed bottom-0 left-0 right-0 z-30 border-t-2 border-slate-100 bg-white">
+      <div class="mx-auto grid max-w-2xl grid-cols-6 px-1">
+        <button data-tab="belajar"
+          class="tab-button flex flex-col items-center gap-1 py-3 text-xs font-extrabold text-leaf"><span
+            class="asset-icon-frame h-9 w-7"><img src="aset/belajar.png" alt=""></span>Belajar</button>
+        <button data-tab="kamus"
+          class="tab-button flex flex-col items-center gap-1 py-3 text-xs font-extrabold text-slate-400"><span
+            class="asset-icon-frame h-7 w-7"><img src="aset/Kamus.png" alt=""></span>Kamus</button>
+        <button data-tab="spin"
+          class="tab-button flex flex-col items-center gap-1 py-3 text-xs font-extrabold text-slate-400"><span
+            class="asset-icon-frame h-7 w-7"><img src="aset/Spin.png" alt=""></span>Roda Jawa</button>
+        <button data-tab="ranking"
+          class="tab-button flex flex-col items-center gap-1 py-3 text-xs font-extrabold text-slate-400"><span
+            class="asset-icon-frame h-7 w-7"><img src="aset/rank.png" alt=""></span>Papan Score</button>
+        <button data-tab="toko"
+          class="tab-button flex flex-col items-center gap-1 py-3 text-xs font-extrabold text-slate-400"><span
+            class="asset-icon-frame h-7 w-7"><img src="aset/toko.png" alt=""></span>Toko</button>
+        <button data-tab="profil"
+          class="tab-button flex flex-col items-center gap-1 py-3 text-xs font-extrabold text-slate-400"><span
+            class="asset-icon-frame h-7 w-7"><img src="aset/profil.png" alt=""></span>Profil</button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- MODAL LOGIN / REGISTER -->
+  <div id="login-modal" class="fixed inset-0 z-50 hidden place-items-center bg-slate-900/40 p-4 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-3xl bg-white p-7 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-extrabold">Masuk ke Viska</h2>
+      </div>
+      <p class="mt-1 text-sm text-slate-500">Silakan masuk dengan akun Viska untuk melanjutkan belajar.</p>
+      <a href="login.html?next=index.html"
+        class="btn-3d mt-6 block w-full rounded-xl border-2 border-[#5e351c] bg-leaf py-3.5 text-center font-extrabold uppercase text-white shadow-button">Masuk
+        ke Viska</a>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC SYSTEM                    -->
+  <!-- ========================================== -->
+  <script>
+    // --- 1. STATE MANAGEMENT ---
+    let currentUser = ViskaAuth.getUser();
+    let score = 0;
+    let coins = 0;
+    let userTitle = 'Mangarah Tari';
+    let rankings = [];
+    let lastRankLevel = null;
+
+    window.addEventListener('viska-auth-ready', function (event) {
+      currentUser = event.detail;
+      hydrateAuthenticatedUser();
+      renderRanking();
+    });
+
+    function ensureLoggedIn() {
+      if (currentUser) return true;
+      window.location.href = 'login.html?next=index.html';
+      return false;
+    }
+
+    function escapeHtml(value) {
+      const element = document.createElement('div');
+      element.textContent = value;
+      return element.innerHTML;
+    }
+
+    function syncCurrentUserToRanking() {
+      if (!currentUser) return;
+      currentUser.xp = score;
+      currentUser.coins = coins;
+      currentUser.rank = rankFor(score);
+      currentUser.unlockedLessons = unlockedLessons;
+      currentUser = ViskaAuth.updateProfile(currentUser);
+      loadRankings();
+    }
+
+    function rankFor(xp) { return xp >= 1001 ? { name: 'Raja Jawa', level: 3, min: 1001, next: null } : xp >= 501 ? { name: 'Prajurit', level: 2, min: 501, next: 1001 } : { name: 'Mangarah Tari', level: 1, min: 0, next: 501 }; }
+
+    function showRankUpModal(rank) {
+      const titleImages = { 'Mangarah Tari': 'aset/logo_rank_mangarah_tari.png', Prajurit: 'aset/logo_rank_prajurit.png', 'Raja Jawa': 'aset/logo_rank_raja_jawa.png' };
+      document.getElementById('rank-up-image').src = titleImages[rank.name];
+      document.getElementById('rank-up-image').alt = `Lambang gelar ${rank.name}`;
+      document.getElementById('rank-up-title').textContent = `Selamat, kamu menjadi ${rank.name}!`;
+      document.getElementById('rank-up-description').textContent = `Kamu telah mencapai Gelar ${rank.level}. Teruskan perjalanan belajarmu!`;
+      document.getElementById('rank-up-modal').classList.remove('hidden');
+      document.getElementById('rank-up-modal').classList.add('flex');
+    }
+
+    function closeRankUpModal() {
+      const modal = document.getElementById('rank-up-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function loadRankings() {
+      rankings = ViskaAuth.getRankings();
+      renderRanking();
+    }
+
+    function renderRanking() {
+      const rankingList = document.getElementById('ranking-list');
+      if (!rankingList) return;
+      const avatarImages = { batik: 'aset/foto_batik.png', kris: 'aset/foto_kris.png', wayang: 'aset/foto_wayang.png' };
+      const avatarBackgrounds = { batik: '#386641', kris: '#C88A35', wayang: '#1E3A2B' };
+      const borderColors = { nila: '#4338ca', emas: '#d89a35', jade: '#2f6d62' };
+      const titleImages = { 'Mangarah Tari': 'aset/logo_rank_mangarah_tari.png', Prajurit: 'aset/logo_rank_prajurit.png', 'Raja Jawa': 'aset/logo_rank_raja_jawa.png' };
+      const titleBackgrounds = { 'Mangarah Tari': '#fff8e8', Prajurit: '#f0faf7', 'Raja Jawa': '#fff9e6' };
+      const activeRank = currentUser ? rankFor(currentUser.xp).name : null;
+      const heading = document.getElementById('ranking-rank-heading');
+      const description = document.getElementById('ranking-rank-description');
+      if (activeRank) {
+        heading.textContent = `Papan Score · ${activeRank}`;
+        description.textContent = `Ayo kejar scorenya!`;
+      }
+      const sortedPlayers = rankings
+        .filter(player => !activeRank || rankFor(player.xp).name === activeRank)
+        .sort((a, b) => b.xp - a.xp || a.name.localeCompare(b.name));
+      rankingList.innerHTML = sortedPlayers.map((player, index) => {
+        const isCurrentUser = currentUser && player.id === currentUser.id;
+        const medal = ['ranking.png', 'rangking_2.png', 'rangking_3.png'][index];
+        const title = rankFor(player.xp).name;
+        const avatar = avatarImages[player.avatar] || avatarImages.batik;
+        const avatarBackground = avatarBackgrounds[player.avatar] || avatarBackgrounds.batik;
+        const borderColor = borderColors[player.avatarBorder] || borderColors.nila;
+        return `<article class="flex items-center gap-4 rounded-2xl border-2 ${isCurrentUser ? 'border-leaf bg-mint/40' : 'border-slate-100 bg-white'} p-4">
+          <span class="asset-icon-frame h-11 w-11 shrink-10 rounded-full bg-slate-100">${medal ? `<img src="aset/${medal}" alt="Peringkat ${index + 1}">` : `<b class="font-black text-slate-600">${index + 1}</b>`}</span>
+          <span class="ranking-avatar" style="--avatar-background: ${avatarBackground}; --avatar-border: ${borderColor}"><img class="avatar-photo" src="${avatar}" alt="Foto profil ${escapeHtml(player.name)}"></span>
+          <div class="min-w-0 flex-1"><p class="truncate font-extrabold">${escapeHtml(player.name)}${isCurrentUser ? ' <span class="text-xs text-leaf">(Kamu)</span>' : ''}</p><p class="text-sm font-bold text-slate-400">${player.xp} XP · ${title}</p></div>
+          <span class="ranking-title-badge" style="--title-background: ${titleBackgrounds[title]}"><img src="${titleImages[title]}" alt="Gelar ${title}"></span>
+          <span class="text-sm font-black text-slate-400">#${index + 1}</span>
+        </article>`;
+      }).join('') || '<p class="rounded-2xl bg-white p-5 text-center text-slate-400">Belum ada pengguna lain di ruang Score ini.</p>';
+    }
+
+    // Item Buff Khusus Spin Mode
+    let itemSkipCount = 0;
+    let itemShieldCount = 0;
+
+    function applySpinInventory(user) {
+      itemSkipCount = Math.max(0, Number(user?.spinSkipCount) || 0);
+      itemShieldCount = Math.max(0, Number(user?.spinShieldCount) || 0);
+      updateSpinStats();
+    }
+
+    async function consumeSpinItem(item) {
+      try {
+        currentUser = ViskaAuth.useSpinItem(item);
+        applySpinInventory(currentUser);
+        return true;
+      } catch (error) {
+        alert(error.message);
+        return false;
+      }
+    }
+
+    // Data Kamus
+    const dictionary = [
+      { ngoko: 'dikubur', madya: 'dipetak', inggil: 'disareake', indo: 'dikubur' },
+      { ngoko: 'ngeterna', madya: 'ngiringaken', inggil: 'ndherekaken', indo: 'mengantarkan' },
+      { ngoko: 'tenanan', madya: 'yektos', inggil: 'yektos', indo: 'sungguh-sungguh' },
+      { ngoko: 'abang', madya: 'abrit', inggil: 'abrit', indo: 'merah' },
+      { ngoko: 'abot', madya: 'awrat', inggil: 'awrat', indo: 'berat' },
+      { ngoko: 'sega', madya: 'sekul', inggil: 'sekul', indo: 'nasi' },
+      { ngoko: 'ngadeg', madya: 'ngadeg', inggil: 'jumeneng', indo: 'berdiri' },
+      { ngoko: 'adhem', madya: 'adhem', inggil: 'asrep', indo: 'dingin' },
+      { ngoko: 'adek', madya: 'adhi', inggil: 'rayi', indo: 'adek' },
+      { ngoko: 'adoh', madya: 'tebih', inggil: 'tebih', indo: 'jauh' },
+      { ngoko: 'dodol', madya: 'sade', inggil: 'sade', indo: 'jual' },
+      { ngoko: 'adu', madya: 'aben', inggil: 'aben', indo: 'mengadu' },
+      { ngoko: 'adus', madya: 'adus', inggil: 'siram', indo: 'mandi' },
+      { ngoko: 'ojok', madya: 'aja', inggil: 'aja', indo: 'jangan' },
+      { ngoko: 'alas', madya: 'wana', inggil: 'wana', indo: 'hutan' },
+      { ngoko: 'ali-ali', madya: 'sesupe', inggil: 'sesupe', indo: 'cincin' },
+      { ngoko: 'amarga', madya: 'amargi', inggil: 'amargi', indo: 'karena' },
+      { ngoko: 'ambu', madya: 'ambet', inggil: 'ambet', indo: 'bau' },
+      { ngoko: 'ambung', madya: 'ambung', inggil: 'aras', indo: 'cium' },
+      { ngoko: 'amit', madya: 'amit', inggil: 'nuwun sewu', indo: 'permisi' },
+      { ngoko: 'ampir', madya: 'ampir', inggil: 'pinarak', indo: 'singgah' },
+      { ngoko: 'ana', madya: 'wonten', inggil: 'wonten', indo: 'ada' },
+      { ngoko: 'nggawe', madya: 'damel', inggil: 'damel', indo: 'buat' },
+      { ngoko: 'sek', madya: 'antos', inggil: 'antos', indo: 'tunggu' },
+      { ngoko: 'asu', madya: 'segawon', inggil: 'segawon', indo: 'anjing' },
+      { ngoko: 'melok', madya: 'tumut', inggil: 'nderek', indo: 'ikut' },
+      { ngoko: 'banyu', madya: 'toya', inggil: 'toya', indo: 'air' },
+      { ngoko: 'ben', madya: 'kajengipun', inggil: 'kersanipun', indo: 'biar' },
+      { ngoko: 'ngombe', madya: 'ngombe', inggil: 'ngunjuk', indo: 'minum' },
+      { ngoko: 'ndelok', madya: 'nyawang', inggil: 'ningali', indo: 'melihat' },
+      { ngoko: 'tuku', madya: 'tumbas', inggil: 'mundhut', indo: 'beli' },
+      { ngoko: 'lunga', madya: 'kesah', inggil: 'tindhak', indo: 'pergi' },
+      { ngoko: 'mangan', madya: 'nedha', inggil: 'dhahar', indo: 'makan' },
+      { ngoko: 'turu', madya: 'tilem', inggil: 'sare', indo: 'tidur' },
+      { ngoko: 'teka', madya: 'dugi', inggil: 'rawuh', indo: 'datang' },
+      { ngoko: 'bali', madya: 'wangsul', inggil: 'kondur', indo: 'pulang' },
+      { ngoko: 'lali', madya: 'supe', inggil: 'supe', indo: 'lupa' },
+      { ngoko: 'omong', madya: 'sanjang', inggil: 'ngendika', indo: 'berbicara' },
+      { ngoko: 'jaluk', madya: 'nyuwun', inggil: 'nyuwun', indo: 'meminta' },
+      { ngoko: 'entuk', madya: 'angsal', inggil: 'kepareng', indo: 'boleh' },
+      { ngoko: 'jeneng', madya: 'nami', inggil: 'asma', indo: 'nama' },
+      { ngoko: 'umur', madya: 'umur', inggil: 'yuswa', indo: 'usia' },
+      { ngoko: 'ndas', madya: 'sirah', inggil: 'mustaka', indo: 'kepala' },
+      { ngoko: 'dhuwit', madya: 'artos', inggil: 'arta', indo: 'uang' },
+      { ngoko: 'isuk', madya: 'enjang', inggil: 'enjang', indo: 'pagi' },
+      { ngoko: 'awan', madya: 'siang', inggil: 'siang', indo: 'siang' },
+      { ngoko: 'sore', madya: 'sonten', inggil: 'sonten', indo: 'sore' },
+      { ngoko: 'bengi', madya: 'dalu', inggil: 'dalu', indo: 'malam' },
+      { ngoko: 'takon', madya: 'taken', inggil: 'nyuwun pirsa', indo: 'bertanya' },
+      { ngoko: 'maca', madya: 'maos', inggil: 'maos', indo: 'membaca' }
+    ];
+
+    // data Soal Belajar
+    let activeFilter = 'Semua', lessonIndex = 0, questionIndex = 0, hearts = 3, answered = false;
+    const lessons = [
+      [
+        { type: 'mc', q: 'Apa arti kata "mangan"?', options: ['makan', 'minum', 'tidur', 'pergi'], answer: 0 },
+        { type: 'tf', q: 'Kata "banyu" berarti "air".', answer: true },
+        { type: 'mc', q: 'Apa arti kata "turu"?', options: ['pulang', 'tidur', 'datang', 'berdiri'], answer: 1 },
+        { type: 'mc', q: 'Kata Ngoko untuk "pergi" adalah...', options: ['lunga', 'bali', 'teka', 'tuku'], answer: 0 },
+        { type: 'mc', q: 'Apa arti kata "asu"?', options: ['hutan', 'anjing', 'cincin', 'air'], answer: 1 }
+      ],
+      [
+        { type: 'mc', q: 'Krama Madya dari "mangan" adalah...', options: ['nedha', 'dhahar', 'sare', 'ngunjuk'], answer: 0 },
+        { type: 'tf', q: 'Kata "rawuh" berarti "datang".', answer: true },
+        { type: 'mc', q: 'Krama Inggil dari "turu" adalah...', options: ['tilem', 'sare', 'kondur', 'jumeneng'], answer: 1 },
+        { type: 'mc', q: 'Apa arti kata "tumbas"?', options: ['jual', 'beli', 'buat', 'meminta'], answer: 1 },
+        { type: 'mc', q: 'Krama Madya dari "bali" adalah...', options: ['kondur', 'wangsul', 'dugi', 'kesah'], answer: 1 }
+      ],
+      [
+        { type: 'mc', q: 'Apa arti kata "wonten"?', options: ['ada', 'biar', 'tunggu', 'jauh'], answer: 0 },
+        { type: 'tf', q: 'Kata "mustaka" berarti "kepala".', answer: true },
+        { type: 'mc', q: 'Krama Inggil dari "ndelok" adalah...', options: ['nyawang', 'ningali', 'maos', 'taken'], answer: 1 },
+        { type: 'mc', q: 'Apa arti kata "amargi"?', options: ['bau', 'karena', 'singgah', 'hutan'], answer: 1 },
+        { type: 'mc', q: 'Krama Madya dari "dhuwit" adalah...', options: ['arta', 'artos', 'yuswa', 'nami'], answer: 1 }
+      ],
+      [
+        { type: 'mc', q: 'Apa arti kata "pinarak"?', options: ['singgah', 'pulang', 'berdiri', 'mengantarkan'], answer: 0 },
+        { type: 'tf', q: 'Kata "kepareng" berarti "boleh".', answer: true },
+        { type: 'mc', q: 'Krama Inggil dari "omong" adalah...', options: ['sanjang', 'ngendika', 'nyuwun', 'nyuwun pirsa'], answer: 1 },
+        { type: 'mc', q: 'Apa arti kata "sesupe"?', options: ['cincin', 'hutan', 'uang', 'nama'], answer: 0 },
+        { type: 'mc', q: 'Krama Madya dari "takon" adalah...', options: ['taken', 'maos', 'angsal', 'tumut'], answer: 0 }
+      ],
+      [
+        { type: 'mc', q: 'Apa arti kata "ndherekaken"?', options: ['mengantarkan', 'mengadu', 'berbicara', 'meminta'], answer: 0 },
+        { type: 'tf', q: 'Kata "kersanipun" berarti "biar".', answer: true },
+        { type: 'mc', q: 'Krama Inggil dari "ngombe" adalah...', options: ['ngombe', 'ngunjuk', 'toya', 'sekul'], answer: 1 },
+        { type: 'mc', q: 'Apa arti kata "jumeneng"?', options: ['datang', 'berdiri', 'mandi', 'membaca'], answer: 1 },
+        { type: 'mc', q: 'Krama Madya dari "jaluk" adalah...', options: ['nyuwun', 'kepareng', 'angsal', 'tumut'], answer: 0 },
+        { type: 'mc', q: 'Apa arti kata "disareake"?', options: ['dikubur', 'singgah', 'pulang', 'dingin'], answer: 0 },
+        { type: 'tf', q: 'Kata "yuswa" berarti "usia".', answer: true },
+        { type: 'mc', q: 'Krama Inggil dari "ben" adalah...', options: ['kajengipun', 'kersanipun', 'amargi', 'yektos'], answer: 1 },
+        { type: 'mc', q: 'Apa arti kata "aras"?', options: ['cium', 'bau', 'hutan', 'cincin'], answer: 0 },
+        { type: 'mc', q: 'Krama Inggil dari "takon" adalah...', options: ['taken', 'nyuwun pirsa', 'ngendika', 'nderek'], answer: 1 }
+      ]
+    ];
+
+    // data Soal Spin
+    const spinQuestions = [
+      // Easy: kosakata Ngoko yang umum.
+      { difficulty: 'Mudah', word: 'mangan', answer: 'makan', options: ['makan', 'minum', 'tidur', 'pergi'] },
+      { difficulty: 'Mudah', word: 'turu', answer: 'tidur', options: ['datang', 'tidur', 'pulang', 'mandi'] },
+      { difficulty: 'Mudah', word: 'banyu', answer: 'air', options: ['uang', 'air', 'nasi', 'hutan'] },
+      { difficulty: 'Mudah', word: 'tuku', answer: 'beli', options: ['jual', 'beli', 'buat', 'meminta'] },
+      { difficulty: 'Mudah', word: 'lunga', answer: 'pergi', options: ['pulang', 'pergi', 'datang', 'singgah'] },
+      { difficulty: 'Mudah', word: 'asu', answer: 'anjing', options: ['cincin', 'anjing', 'hutan', 'kepala'] },
+      { difficulty: 'Mudah', word: 'sega', answer: 'nasi', options: ['air', 'nasi', 'uang', 'nama'] },
+      { difficulty: 'Mudah', word: 'adhem', answer: 'dingin', options: ['dingin', 'jauh', 'berat', 'merah'] },
+      { difficulty: 'Mudah', word: 'maca', answer: 'membaca', options: ['bertanya', 'membaca', 'berbicara', 'melihat'] },
+      { difficulty: 'Mudah', word: 'dhuwit', answer: 'uang', options: ['uang', 'usia', 'nama', 'kepala'] },
+
+      // Medium: padanan Krama Madya dan Krama Inggil yang sering digunakan.
+      { difficulty: 'Normal', word: 'nedha', answer: 'makan', options: ['minum', 'makan', 'tidur', 'mandi'] },
+      { difficulty: 'Normal', word: 'kesah', answer: 'pergi', options: ['datang', 'pulang', 'pergi', 'singgah'] },
+      { difficulty: 'Normal', word: 'rawuh', answer: 'datang', options: ['datang', 'pulang', 'berdiri', 'tunggu'] },
+      { difficulty: 'Normal', word: 'kondur', answer: 'pulang', options: ['pergi', 'pulang', 'datang', 'singgah'] },
+      { difficulty: 'Normal', word: 'tumbas', answer: 'beli', options: ['jual', 'beli', 'mengadu', 'buat'] },
+      { difficulty: 'Normal', word: 'ningali', answer: 'melihat', options: ['membaca', 'bertanya', 'melihat', 'berbicara'] },
+      { difficulty: 'Normal', word: 'ngunjuk', answer: 'minum', options: ['makan', 'minum', 'mandi', 'cium'] },
+      { difficulty: 'Normal', word: 'nyuwun', answer: 'meminta', options: ['boleh', 'meminta', 'ikut', 'tunggu'] },
+      { difficulty: 'Normal', word: 'tebih', answer: 'jauh', options: ['berat', 'jauh', 'dingin', 'merah'] },
+      { difficulty: 'Normal', word: 'artos', answer: 'uang', options: ['usia', 'uang', 'nama', 'kepala'] },
+
+      // Sangat Sulit: kosakata jarang dan pilihan dengan arti yang berdekatan.
+      { difficulty: 'Sulit', word: 'disareake', answer: 'dikubur', options: ['dikubur', 'singgah', 'mengantarkan', 'pulang'] },
+      { difficulty: 'Sulit', word: 'ndherekaken', answer: 'mengantarkan', options: ['mengantarkan', 'mengadu', 'berbicara', 'meminta'] },
+      { difficulty: 'Sulit', word: 'kersanipun', answer: 'biar', options: ['karena', 'biar', 'boleh', 'ada'] },
+      { difficulty: 'Sulit', word: 'kepareng', answer: 'boleh', options: ['boleh', 'biar', 'tunggu', 'ikut'] },
+      { difficulty: 'Sulit', word: 'pinarak', answer: 'singgah', options: ['singgah', 'pulang', 'datang', 'pergi'] },
+      { difficulty: 'Sulit', word: 'mustaka', answer: 'kepala', options: ['nama', 'usia', 'uang', 'kepala'] },
+      { difficulty: 'Sulit', word: 'sesupe', answer: 'cincin', options: ['cincin', 'hutan', 'anjing', 'air'] },
+      { difficulty: 'Sulit', word: 'jumeneng', answer: 'berdiri', options: ['mandi', 'berdiri', 'datang', 'membaca'] },
+      { difficulty: 'Sulit', word: 'ngendika', answer: 'berbicara', options: ['bertanya', 'berbicara', 'melihat', 'membaca'] },
+      { difficulty: 'Sulit', word: 'nyuwun pirsa', answer: 'bertanya', options: ['membaca', 'melihat', 'bertanya', 'meminta'] }
+    ];
+
+    // System Spin State
+    let spinPoints = 0;
+    let spinCoins = 0;
+    let spinStreak = 0;
+    let currentSpin = null;
+    let spinAnswered = false;
+
+    // Base Reward per Soal Spin
+    const BASE_SPIN_POINTS = 10;
+    const BASE_SPIN_COINS = 2;
+
+    // --- 2. SYSTEM UTILS & UI UPDATE ---
+    function updateHeaderStats() {
+      document.getElementById('header-score').textContent = `${score} XP`;
+      document.getElementById('header-coins').textContent = coins;
+      document.getElementById('profile-xp').textContent = `${score} XP`;
+      document.getElementById('profile-coins').textContent = coins;
+      const rank = rankFor(score);
+      const rankIncreased = lastRankLevel !== null && rank.level > lastRankLevel;
+      lastRankLevel = rank.level;
+      userTitle = rank.name;
+      const titleBadge = document.getElementById('profile-title');
+      titleBadge.textContent = userTitle;
+      titleBadge.style.backgroundImage = 'none';
+      document.getElementById('profile-rank-level').textContent = `Rank ${rank.level} · ${rank.name}`;
+      const progress = rank.next ? Math.min(100, ((score - rank.min) / (rank.next - rank.min)) * 100) : 100;
+      document.getElementById('rank-progress-bar').style.width = `${progress}%`;
+      document.getElementById('rank-progress-text').textContent = rank.next ? `${score} / ${rank.next} XP` : `${score} XP`;
+      document.getElementById('rank-progress-hint').textContent = rank.next ? `${rank.next - score} XP lagi menuju ${rank.level === 1 ? 'Prajurit' : 'Raja Jawa'}.` : 'Puncak peringkat telah kamu raih.';
+      syncCurrentUserToRanking();
+      if (rankIncreased) showRankUpModal(rank);
+    }
+
+    function updateSpinStats() {
+      const multiplier = 1 + (spinStreak * 0.25);
+      document.getElementById('spin-points').textContent = spinPoints;
+      document.getElementById('spin-session-coins').textContent = spinCoins;
+      document.getElementById('spin-multiplier').textContent = `${multiplier.toFixed(spinStreak ? 2 : 0)}x`;
+      document.getElementById('cashout-btn').disabled = (spinPoints === 0 && spinCoins === 0);
+
+      // Update inventaris item Spin
+      document.getElementById('inventory-skip').textContent = itemSkipCount;
+      document.getElementById('inventory-shield').textContent = itemShieldCount;
+      document.getElementById('skip-btn-count').textContent = itemSkipCount;
+
+      const skipBtn = document.getElementById('use-skip-btn');
+      if (itemSkipCount > 0 && !spinAnswered && currentSpin) {
+        skipBtn.classList.remove('hidden');
+      } else {
+        skipBtn.classList.add('hidden');
+      }
+
+      updateHeaderStats();
+    }
+
+    function switchTab(tab) {
+      if (!ensureLoggedIn()) return;
+      setGameplayNavigation(false);
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.add('hidden'));
+      document.getElementById('tab-' + tab).classList.remove('hidden');
+      document.querySelectorAll('.tab-button').forEach(button => {
+        const isSelected = button.dataset.tab === tab;
+        button.classList.toggle('text-leaf', isSelected);
+        button.classList.toggle('text-slate-400', !isSelected);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Sembunyikan navigasi selama pengguna fokus mengerjakan soal.
+    function setGameplayNavigation(isActive) {
+      document.body.classList.toggle('game-focus', isActive);
+      document.querySelector('.viska-nav').setAttribute('aria-hidden', String(isActive));
+    }
+
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => switchTab(button.dataset.tab));
+    });
+
+    // --- 3. KAMUS LOGIC ---
+    function toggleLanguageGuide() { document.getElementById('language-guide').classList.toggle('hidden'); }
+
+    function renderDictionary() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const terms = { 'Ngoko': 'ngoko', 'Krama Madya': 'madya', 'Krama Inggil': 'inggil' };
+      const items = dictionary.filter(item => {
+        const matchesFilter = activeFilter === 'Semua' || item[terms[activeFilter]].toLowerCase().includes(query) || !query;
+        const matchesSearch = Object.values(item).some(value => value.toLowerCase().includes(query));
+        return matchesFilter && matchesSearch;
+      });
+      document.getElementById('dictionary-list').innerHTML = items.length ? items.map(function (item) {
+        return '<article class="overflow-hidden rounded-2xl border-2 border-slate-100 bg-white shadow-sm transition hover:border-leaf/30 hover:shadow-md">' +
+          '<div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">' +
+          '<span class="font-bold text-slate-500">Arti Indonesia</span>' +
+          '<strong class="text-lg text-ink">' + item.indo + '</strong>' +
+          '</div>' +
+          '<dl class="grid grid-cols-3 divide-x divide-slate-100 text-center">' +
+          '<div class="p-4"><dt class="text-xs font-bold uppercase tracking-wider text-[#e67e22]">Ngoko</dt><dd class="mt-1 font-extrabold">' + item.ngoko + '</dd></div>' +
+          '<div class="p-4"><dt class="text-xs font-bold uppercase tracking-wider text-sky">Krama Madya</dt><dd class="mt-1 font-extrabold">' + item.madya + '</dd></div>' +
+          '<div class="p-4"><dt class="text-xs font-bold uppercase tracking-wider text-leaf">Krama Inggil</dt><dd class="mt-1 font-extrabold">' + item.inggil + '</dd></div>' +
+          '</dl>' +
+          '</article>';
+      }).join('') : '<p class="col-span-full py-10 text-center font-semibold text-slate-400">Kata belum ditemukan. Coba kata lain, ya.</p>';
+    }
+
+    // Variable state untuk melacak level yang terbuka & xp sementara
+    let unlockedLessons = [0]; // Level 1 (indeks 0) terbuka otomatis
+
+    function loadLessonProgress() {
+      const savedLevels = Array.isArray(currentUser?.unlockedLessons) ? currentUser.unlockedLessons : [0];
+      unlockedLessons = [...new Set([0, ...savedLevels.filter(level => Number.isInteger(level) && level >= 0 && level < lessons.length)])].sort((a, b) => a - b);
+      renderLearningMap();
+    }
+    let currentLessonXP = 0;
+    let currentCoinsEarned = 0;
+
+    // --- 4. BELAJAR LOGIC ---
+    function startLesson(index) {
+      if (!ensureLoggedIn()) return;
+      // Validasi: Cek apakah level yang diklik sudah terbuka
+      if (!unlockedLessons.includes(index)) {
+        alert(`Level ${index + 1} masih terkunci! Selesaikan level sebelumnya terlebih dahulu.`);
+        return;
+      }
+
+      lessonIndex = index;
+      questionIndex = 0;
+      hearts = 3;
+      answered = false;
+      currentLessonXP = 0; // Reset XP sementara saat level dimulai
+      currentCoinsEarned = 0; // Reset koin sementara saat level dimulai
+      document.getElementById('learning-map').classList.add('hidden');
+      document.getElementById('quiz-area').classList.remove('hidden');
+      setGameplayNavigation(true);
+      showQuestion();
+    }
+
+    function exitLesson() {
+      document.getElementById('quiz-area').classList.add('hidden');
+      document.getElementById('learning-map').classList.remove('hidden');
+      setGameplayNavigation(false);
+    }
+
+    function showQuestion() {
+      const q = lessons[lessonIndex][questionIndex];
+      answered = false;
+      document.getElementById('quiz-progress').style.width = ((questionIndex / lessons[lessonIndex].length) * 100) + '%';
+      document.getElementById('hearts').textContent = hearts;
+      document.getElementById('quiz-label').textContent = 'Level ' + (lessonIndex + 1) + ' · Soal ' + (questionIndex + 1);
+      document.getElementById('quiz-question').textContent = q.q;
+
+      const options = q.type === 'tf' ? [{ label: 'Benar', value: true }, { label: 'Salah', value: false }] : q.options.map((label, i) => ({ label, value: i }));
+
+      document.getElementById('quiz-options').innerHTML = options.map(function (o, i) {
+        return '<button onclick="answerQuiz(' + o.value + ')" class="quiz-option rounded-2xl border-2 border-slate-200 bg-white p-4 text-left font-bold text-slate-600 transition hover:border-sky hover:bg-sky/5">' +
+          '<span class="mr-3 inline-grid h-7 w-7 place-items-center rounded-lg bg-slate-100 text-sm text-slate-500">' + String.fromCharCode(65 + i) + '</span>' +
+          o.label +
+          '</button>';
+      }).join('');
+
+      document.getElementById('quiz-feedback').classList.add('hidden');
+      document.getElementById('quiz-next').classList.add('hidden');
+    }
+
+    function answerQuiz(value) {
+      if (answered) return;
+      answered = true;
+      const q = lessons[lessonIndex][questionIndex], correct = value === q.answer, feedback = document.getElementById('quiz-feedback');
+      document.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+
+      if (correct) {
+        currentCoinsEarned += 5;
+        currentLessonXP += 5; // Jawaban benar menambah 5 XP ke potensi total
+        feedback.className = 'mt-6 rounded-2xl bg-mint p-5 font-bold text-[#338000]';
+        feedback.textContent = '✓ Hebat! Jawabanmu benar.';
+      } else {
+        hearts--;
+        // Kurangi potensi XP sebesar 5, gunakan Math.max agar tidak minus di bawah 0
+        currentLessonXP = Math.max(0, currentLessonXP - 0);
+        document.getElementById('hearts').textContent = hearts;
+        feedback.className = 'mt-6 rounded-2xl bg-red-100 p-5 font-bold text-coral';
+        feedback.textContent = ` X Belum tepat. Jawaban yang benar: ${q.type === 'tf' ? (q.answer ? 'Benar' : 'Salah') : q.options[q.answer]}`;
+      }
+
+      updateHeaderStats();
+      feedback.classList.remove('hidden');
+      document.getElementById('quiz-next').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      if (hearts <= 0) {
+        alert('Nyawamu habis. Level gagal. Coba lagi ya!');
+        exitLesson();
+        return;
+      }
+      questionIndex++;
+
+      // Gabungan pemeriksaan akhir level (XP & Koin)
+      if (questionIndex >= lessons[lessonIndex].length) {
+        score += currentLessonXP;
+        coins += currentCoinsEarned;
+
+        // Buka Level Berikutnya
+        const nextLevelIndex = lessonIndex + 1;
+        if (nextLevelIndex < lessons.length && !unlockedLessons.includes(nextLevelIndex)) {
+          unlockedLessons.push(nextLevelIndex);
+        }
+
+        updateHeaderStats();
+        renderLearningMap(); // Update tampilan tombol di UI (mengubah gembok 🔒 jadi level aktif)
+        alert(`Level selesai! Kamu memperoleh ${currentLessonXP} XP dan ${currentCoinsEarned} Koin.`);
+        exitLesson();
+      } else {
+        showQuestion();
+      }
+    }
+
+    // Fungsi Render Peta Level (Menggunakan Inline CSS untuk menjamin efek pucat/abu-abu)
+    function renderLearningMap() {
+      const mapContainer = document.getElementById('level-buttons-container');
+      if (!mapContainer) return;
+
+      const styles = [
+        'border-[#5e351c] bg-leaf shadow-button',
+        'border-[#235248] bg-sky shadow-skybutton',
+        'border-[#ae7621] bg-sun shadow-sunbutton',
+        'border-[#a0522d] bg-coral shadow-[0_8px_22px_#A0522D26]',
+        'border-[#7f1d1d] bg-red-600 shadow-[0_8px_22px_#991B1B33]'
+      ];
+      const icons = ['1', '2', '3', '4', '5'];
+
+      mapContainer.innerHTML = lessons.map((_, i) => {
+        const isUnlocked = unlockedLessons.includes(i);
+        const style = styles[i % styles.length];
+        const icon = icons[i % icons.length];
+
+        if (isUnlocked) {
+          // Tombol Aktif / Terbuka
+          return `
+            <button onclick="startLesson(${i})" class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-b-4 border-2 ${style} text-white transition-all duration-200 hover:brightness-105 active:translate-y-1 cursor-pointer">
+              <span class="text-3xl">${icon}</span>
+  
+            </button>
+          `;
+        } else {
+          // Tombol Pucat / Terkunci (warna dibuat lebih pucat via inline style)
+          return `
+              <button disabled style="background-color: rgba(226,232,240,0.7) !important; border-color: rgba(203,213,225,0.7) !important; color: rgba(100,116,139,0.85) !important; opacity: 0.7 !important; box-shadow: none !important; pointer-events: none !important; cursor: not-allowed !important;" class="relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 select-none">
+                <span class="asset-icon-frame h-14 w-14" style="opacity: 0.6;"><img src="aset/gembok_level.png" alt="Level terkunci"></span>
+              </button>
+            `;
+        }
+      }).join('');
+    }
+
+    // Jalankan render awal saat script dimuat
+    renderLearningMap();
+
+    // --- 5. SPIN LOGIC ---
+    function spinQuestion() {
+      if (!ensureLoggedIn()) return;
+      setGameplayNavigation(true);
+      const idle = document.getElementById('spin-idle');
+      const wheel = idle.querySelector('.spin-wheel');
+      idle.classList.remove('hidden');
+      document.getElementById('spin-question-card').classList.add('hidden');
+      wheel.classList.remove('wheel-spinning');
+      void wheel.offsetWidth;
+      wheel.classList.add('wheel-spinning');
+      document.getElementById('spin-btn').disabled = true;
+
+      setTimeout(() => {
+        currentSpin = spinQuestions[Math.floor(Math.random() * spinQuestions.length)];
+        spinAnswered = false;
+        idle.classList.add('hidden');
+        const card = document.getElementById('spin-question-card');
+        card.classList.remove('hidden');
+        const difficulty = document.getElementById('spin-difficulty');
+        difficulty.textContent = 'Tingkat: ' + currentSpin.difficulty;
+        difficulty.className = 'mt-1 text-xs font-extrabold ' +
+          (currentSpin.difficulty === 'Mudah' ? 'text-leaf' : currentSpin.difficulty === 'Normal' ? 'text-[#ca8a04]' : 'text-red-600');
+        document.getElementById('spin-word').textContent = '“' + currentSpin.word + '”';
+        document.getElementById('spin-options').innerHTML = currentSpin.options.map(function (option, i) {
+          return '<button type="button" data-option-index="' + i + '" class="spin-option rounded-2xl border-2 border-slate-200 bg-white p-4 text-left font-bold text-slate-600 transition hover:border-sky hover:bg-sky/5">' +
+            '<span class="mr-3 inline-grid h-7 w-7 place-items-center rounded-lg bg-slate-100 text-sm text-slate-500">' + String.fromCharCode(65 + i) + '</span>' +
+            option +
+            '</button>';
+        }).join('');
+        document.querySelectorAll('.spin-option').forEach(button => button.addEventListener('click', () => answerSpin(currentSpin.options[Number(button.dataset.optionIndex)])));
+        document.getElementById('spin-feedback').classList.add('hidden');
+        document.getElementById('spin-next').classList.add('hidden');
+        document.getElementById('spin-btn').disabled = false;
+        updateSpinStats();
+      }, 1050);
+    }
+
+    async function answerSpin(value) {
+      if (spinAnswered) return;
+      spinAnswered = true;
+      const correct = value === currentSpin.answer, feedback = document.getElementById('spin-feedback');
+      document.querySelectorAll('.spin-option').forEach(b => b.disabled = true);
+
+      if (correct) {
+        const multiplier = 1 + spinStreak * .25;
+        const earnedPoints = Math.round(BASE_SPIN_POINTS * multiplier);
+        const earnedCoins = Math.round(BASE_SPIN_COINS * multiplier);
+
+        spinPoints += earnedPoints;
+        spinCoins += earnedCoins;
+        spinStreak++;
+
+        feedback.className = 'mt-5 rounded-2xl bg-mint p-5 font-bold text-[#338000]';
+        feedback.textContent = `✓ Benar! +${earnedPoints} XP & +${earnedCoins} Koin sesi ini. (Streak: ${spinStreak}x)`;
+      } else {
+        if (itemShieldCount > 0 && await consumeSpinItem('shield')) {
+          feedback.className = 'mt-5 rounded-2xl bg-sky/20 border-2 border-sky p-5 font-bold text-sky';
+          feedback.textContent = `Perisai terpakai! Yang benar (“${currentSpin.answer}”), namun XP & koin sesimu aman.`;
+        } else {
+          spinPoints = 0;
+          spinCoins = 0;
+          spinStreak = 0;
+          setGameplayNavigation(false);
+          feedback.className = 'mt-5 rounded-2xl bg-red-100 p-5 font-bold text-coral';
+          feedback.textContent = ` X Salah! Jawabannya “${currentSpin.answer}”. Semua xp & koin sesi ini hangus.`;
+        }
+      }
+      updateSpinStats();
+      feedback.classList.remove('hidden');
+      document.getElementById('spin-next').classList.remove('hidden');
+    }
+
+    async function useSkipItem() {
+      if (itemSkipCount > 0 && !spinAnswered) {
+        if (!await consumeSpinItem('skip')) return;
+        alert('Soal berhasil dilewati!');
+        spinQuestion();
+      }
+    }
+
+    function cashOut() {
+      if (!ensureLoggedIn()) return;
+      if (!spinPoints && !spinCoins) return;
+      score += spinPoints;
+      coins += spinCoins;
+      alert(`Mantap! ${spinPoints} XP ditukar menjadi XP dan ${spinCoins} koin berhasil diklaim!`);
+      spinPoints = 0;
+      spinCoins = 0;
+      spinStreak = 0;
+      updateSpinStats();
+      document.getElementById('spin-question-card').classList.add('hidden');
+      document.getElementById('spin-idle').classList.remove('hidden');
+      setGameplayNavigation(false);
+    }
+
+    // --- 6. TOKO LOGIC ---
+    async function buyItem(item) {
+      if (!ensureLoggedIn()) return;
+      try {
+        currentUser = ViskaAuth.purchase(item);
+        score = currentUser.xp;
+        coins = currentUser.coins;
+        applySpinInventory(currentUser);
+        updateHeaderStats();
+        alert(item === 'skip_item' ? 'Berhasil membeli 1x Skip Soal Spin!' : 'Berhasil membeli 1x Perisai Pelindung Spin!');
+      } catch (error) { alert(error.message); }
+    }
+
+    async function buyCosmetic(item) {
+      if (!ensureLoggedIn()) return;
+      const button = document.getElementById('shop-' + item);
+      button.disabled = true;
+      try {
+        currentUser = ViskaAuth.purchase(item);
+        score = currentUser.xp;
+        coins = currentUser.coins;
+        renderProfileCosmetics();
+        updateHeaderStats();
+        alert('Kosmetik berhasil dibeli dan langsung dipasang.');
+      } catch (error) { alert(error.message); }
+      finally { button.disabled = false; renderShopButtons(); }
+    }
+
+    function renderShopButtons() {
+      if (!currentUser) return;
+      const owned = new Set([...(currentUser.ownedAvatars || []), ...(currentUser.ownedBorders || [])]);
+      [['avatar_kris', 'kris'], ['avatar_wayang', 'wayang'], ['border_emas', 'emas'], ['border_jade', 'jade']].forEach(([id, value]) => {
+        const button = document.getElementById('shop-' + id);
+        if (button && owned.has(value)) { button.textContent = 'Sudah dimiliki'; button.disabled = true; button.classList.add('opacity-50', 'cursor-not-allowed'); }
+      });
+    }
+
+    function renderProfileCosmetics() {
+      if (!currentUser) return;
+      const avatarStyles = { batik: 'bg-leaf', kris: 'bg-sun', wayang: 'bg-sky' };
+      const borderStyles = { nila: 'border-[#4338ca]', emas: 'border-[#d89a35]', jade: 'border-[#2f6d62]' };
+      const avatarImages = { batik: 'aset/foto_batik.png', kris: 'aset/foto_kris.png', wayang: 'aset/foto_wayang.png' };
+      const avatarStyle = avatarStyles[currentUser.avatar] || avatarStyles.batik;
+      ['profile-avatar', 'user-avatar-badge'].forEach(id => {
+        const el = document.getElementById(id); if (!el) return;
+        el.className = el.className.replace(/bg-(sky|leaf|sun|\[#472c26\])/g, '').replace(/border-(sky|slate-100|\[#4338ca\]|\[#d89a35\]|\[#2f6d62\])/g, '');
+        el.classList.add(avatarStyle, borderStyles[currentUser.avatarBorder] || borderStyles.nila);
+        let image = el.querySelector('img');
+        if (!image) { image = document.createElement('img'); image.className = 'avatar-photo'; image.alt = 'Foto profil'; el.replaceChildren(image); }
+        image.src = avatarImages[currentUser.avatar] || avatarImages.batik;
+        el.style.borderImage = 'none';
+      });
+      // bagian render kosmetik
+      const collection = [...(currentUser.ownedAvatars || ['batik']).map(item => `Avatar ${item}`), ...(currentUser.ownedBorders || ['nila']).map(item => `Border ${item}`)];
+      // document.getElementById('profile-collection').innerHTML = collection.map(item => `<span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">${escapeHtml(item)}</span>`).join('');
+      renderProfilePickers();
+    }
+
+    // tombil milih kosmetik
+    function renderProfilePickers() {
+      if (!currentUser) return;
+      const avatarPicker = document.getElementById('avatar-picker');
+      const borderPicker = document.getElementById('border-picker');
+      const avatarNames = { batik: 'Batik', kris: 'Kris', wayang: 'Wayang' };
+      const avatarImages = { batik: 'aset/foto_batik.png', kris: 'aset/foto_kris.png', wayang: 'aset/foto_wayang.png' };
+      const borderNames = { nila: 'Nila', emas: 'Emas', jade: 'Giok' };
+      avatarPicker.innerHTML = (currentUser.ownedAvatars || ['batik']).map(item => `<button onclick="equipCosmetic('avatar', '${item}')" class="flex items-center gap-2 rounded-xl border-2 px-3 py-2 text-xs font-extrabold ${currentUser.avatar === item ? 'border-sun bg-[#fff1cf] text-[#84530e]' : 'border-slate-200 bg-white text-slate-600'}"><img class="h-7 w-7 rounded-full object-contain" src="${avatarImages[item] || avatarImages.batik}" alt="">${avatarNames[item] || item}</button>`).join('');
+      borderPicker.innerHTML = (currentUser.ownedBorders || ['nila']).map(item => `<button onclick="equipCosmetic('border', '${item}')" class="rounded-xl border-2 px-3 py-2 text-xs font-extrabold ${currentUser.avatarBorder === item ? 'border-sun bg-[#fff1cf] text-[#84530e]' : 'border-slate-200 bg-white text-slate-600'}">${borderNames[item] || item}</button>`).join('');
+    }
+
+    // pasang kosmetik
+    async function equipCosmetic(kind, value) {
+      if (!currentUser) return;
+      const payload = { xp: score, coins, avatar: kind === 'avatar' ? value : currentUser.avatar, avatarBorder: kind === 'border' ? value : currentUser.avatarBorder };
+      try {
+        currentUser = ViskaAuth.updateProfile(payload);
+        renderProfileCosmetics();
+        loadRankings();
+      } catch (error) { alert(error.message); }
+    }
+
+    // --- 7. AKUN & PROFIL LOGIC ---
+    function openLoginModal() {
+      window.location.href = 'login.html?next=index.html';
+    }
+
+    function closeLoginModal() {
+      if (currentUser) document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    function hydrateAuthenticatedUser() {
+      if (!currentUser) return;
+      const username = currentUser.name;
+      score = Number(currentUser.xp) || 0;
+      coins = Number(currentUser.coins) || 0;
+      applySpinInventory(currentUser);
+      loadLessonProgress();
+      document.getElementById('login-btn').classList.add('hidden');
+
+      const badge = document.getElementById('user-avatar-badge');
+      badge.classList.remove('hidden');
+
+      document.getElementById('profile-name').textContent = username;
+      renderProfileCosmetics();
+      renderShopButtons();
+      updateHeaderStats();
+      loadRankings();
+    }
+
+    async function logout() {
+      await ViskaAuth.signOut();
+      currentUser = null;
+      score = 0;
+      document.getElementById('login-btn').classList.remove('hidden');
+      document.getElementById('user-avatar-badge').classList.add('hidden');
+      document.getElementById('profile-name').textContent = 'Pengguna Viska';
+      document.getElementById('profile-avatar').textContent = 'U';
+      updateHeaderStats();
+      window.location.replace('dashboard.html');
+    }
+
+    // Init App
+    renderDictionary();
+    renderLearningMap();
+    loadRankings();
+    hydrateAuthenticatedUser();
+    updateSpinStats();
+  </script>
+</body>
+
+</html>

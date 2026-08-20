@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Masuk — Viska</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --soga: #6d3b26;
+      --batik: #b66d32;
+      --cream: #fff8e8;
+      --ink: #2b211b
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 15% 15%, #eecb7d 0 5%, transparent 5.2%), radial-gradient(circle at 85% 85%, #d89a54 0 6%, transparent 6.2%), var(--cream);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      padding: 20px
+    }
+
+    .card {
+      width: min(460px, 100%);
+      background: #fffdf7;
+      border: 2px solid #e5c88b;
+      border-radius: 28px;
+      padding: 38px;
+      box-shadow: 0 24px 60px #5f361b2b;
+      text-align: center
+    }
+
+    .logo {
+      font: 700 2rem Fraunces, serif;
+      color: var(--soga);
+      text-decoration: none
+    }
+
+    .mark {
+      width: 70px;
+      height: 70px;
+      border-radius: 23px;
+      background: #f3d99c;
+      display: grid;
+      place-items: center;
+      margin: 24px auto 17px;
+      font: 700 2rem Fraunces, serif;
+      color: var(--soga)
+    }
+
+    h1 {
+      font: 700 2.15rem/1.1 Fraunces, serif;
+      margin: 0
+    }
+
+    p {
+      color: #6f6255;
+      line-height: 1.65;
+      margin: 13px 0 22px
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #f3ead6;
+      border-radius: 13px;
+      padding: 4px;
+      margin: 0 0 20px
+    }
+
+    .tabs button {
+      border: 0;
+      background: transparent;
+      border-radius: 10px;
+      padding: 10px;
+      font: 700 .9rem 'DM Sans';
+      color: #796b5b;
+      cursor: pointer
+    }
+
+    .tabs button.active {
+      background: #fffdf7;
+      color: var(--soga);
+      box-shadow: 0 2px 8px #5b321418
+    }
+
+    .form {
+      display: grid;
+      gap: 13px;
+      text-align: left
+    }
+
+    .form label {
+      font-size: .85rem;
+      font-weight: 700;
+      color: #594337
+    }
+
+    .form input {
+      width: 100%;
+      margin-top: 6px;
+      border: 1px solid #d8c4a3;
+      border-radius: 12px;
+      padding: 13px;
+      font: inherit;
+      color: var(--ink);
+      outline-color: var(--batik)
+    }
+
+    .submit {
+      border: 0;
+      border-radius: 13px;
+      background: var(--soga);
+      box-shadow: 0 4px 0 #482515;
+      color: #fff;
+      padding: 14px;
+      font: 700 1rem 'DM Sans';
+      cursor: pointer;
+      margin-top: 5px
+    }
+
+    .submit:active {
+      transform: translateY(3px);
+      box-shadow: none
+    }
+
+    .notice,
+    .error {
+      font-size: .82rem;
+      text-align: left;
+      padding: 11px 13px;
+      border-radius: 11px;
+      margin: 0
+    }
+
+    .notice {
+      background: #f7efdc;
+      color: #735e47
+    }
+
+    .error {
+      display: none;
+      background: #fff0ea;
+      color: #9c3b28
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 20px;
+      color: var(--soga);
+      font-size: .9rem;
+      font-weight: 700;
+      text-decoration: none
+    }
+  </style>
+  <style>
+    :root {
+      --soga: #3D2314;
+      --batik: #A0522D;
+      --cream: #F4F1EA;
+      --ink: #212121
+    }
+
+    body {
+      background: radial-gradient(circle at 15% 15%, #C88A3522 0 5%, transparent 5.2%), radial-gradient(circle at 85% 85%, #1E3A2B18 0 6%, transparent 6.2%), var(--cream)
+    }
+
+    .card {
+      background: #fff;
+      border-color: #e3ddd2;
+      box-shadow: 0 20px 55px #1E3A2B1c
+    }
+
+    .mark {
+      background: #e8ecd9;
+      color: #1E3A2B
+    }
+
+    .tabs {
+      background: #eef0e9
+    }
+
+    .tabs button.active {
+      color: #1E3A2B
+    }
+
+    .form input:focus {
+      outline-color: #2C4A3E
+    }
+
+    .submit {
+      background: #2C4A3E;
+      box-shadow: 0 4px 0 #1E3A2B
+    }
+
+    .notice {
+      background: #f5f1e8;
+      color: #554d43
+    }
+
+    .back,
+    .logo {
+      color: #1E3A2B
+    }
+  </style>
+  <script src="./public/auth.js"></script>
+</head>
+
+<body>
+  <main class="card"><a class="logo" href="dashboard.html">Viska</a>
+    <h1>Sugeng rawuh</h1>
+    <p id="intro">Masuk dengan akun Viska untuk melanjutkan belajar Bahasa Jawa.</p>
+    <div class="tabs"><button class="active" data-mode="login">Masuk</button><button
+        data-mode="register">Daftar</button></div>
+    <form id="auth-form" class="form"><label id="name-field" hidden>Nama<input id="name" autocomplete="name"
+          minlength="2"></label><label>Email<input id="email" type="email" autocomplete="email"
+          required></label><label>Kata sandi<input id="password" type="password" autocomplete="current-password"
+          minlength="8" required></label>
+      <div id="error" class="error"></div><button id="submit" class="submit" type="submit">Masuk ke Viska</button>
+    </form><a class="back" href="dashboard.html">← Kembali ke beranda</a>
+  </main>
+  <script>
+    let mode = 'login';
+    const form = document.querySelector('#auth-form'),
+      nameInput = document.querySelector('#name'),
+      nameField = document.querySelector('#name-field'),
+      password = document.querySelector('#password'),
+      intro = document.querySelector('#intro'),
+      submit = document.querySelector('#submit'),
+      errorBox = document.querySelector('#error');
+
+    document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => {
+      mode = button.dataset.mode;
+      document.querySelectorAll('[data-mode]').forEach(item => item.classList.toggle('active', item === button));
+
+      // Sembunyikan/tampilkan field nama & atur atribut required secara dinamis
+      nameField.hidden = mode === 'login';
+      nameInput.required = mode === 'register';
+
+      password.autocomplete = mode === 'login' ? 'current-password' : 'new-password';
+      intro.textContent = mode === 'login'
+        ? 'Masuk dengan akun Viska untuk melanjutkan belajar Bahasa Jawa.'
+        : 'Buat akun Viska baru untuk menyimpan perjalanan belajarmu.';
+      submit.textContent = mode === 'login' ? 'Masuk ke Viska' : 'Buat akun Viska';
+      errorBox.style.display = 'none';
+    }));
+
+    // Tautan dari tombol "Mulai" membuka formulir pendaftaran secara langsung.
+    if (new URLSearchParams(location.search).get('mode') === 'register') {
+      document.querySelector('[data-mode="register"]').click();
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      errorBox.style.display = 'none';
+      submit.disabled = true;
+
+      const data = { email: email.value, password: password.value };
+      if (mode === 'register') data.name = nameInput.value;
+
+      try {
+        const user = mode === 'login' ? ViskaAuth.login(data) : ViskaAuth.register(data);
+        ViskaAuth.saveUser(user);
+        const next = new URLSearchParams(location.search).get('next');
+        location.replace(next === 'index.html' ? 'index.html' : 'dashboard.html');
+      } catch (error) {
+        errorBox.textContent = error.message;
+        errorBox.style.display = 'block';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  </script>
+</body>
+
+</html>
