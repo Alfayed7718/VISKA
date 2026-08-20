@@ -54,7 +54,9 @@
   }
   function login({ email = '', password = '' }) { const user = readUsers().find(item => item.email === email.trim().toLowerCase() && item.password === password); if (!user) throw Error('Email atau kata sandi tidak tepat.'); localStorage.setItem(activeUserKey, user.id); return normalizeUser(user); }
   function signOut() { localStorage.removeItem(activeUserKey); }
-  function requireAuth() { const user = getUser(); if (!user) { window.location.replace('login.html?next=index.html'); return false; } window.dispatchEvent(new CustomEvent('viska-auth-ready', { detail: user })); return true; }
+  // Area belajar hanya dapat dibuka setelah pengguna memiliki sesi aktif.
+  // Pengunjung baru kembali ke dashboard sebagai halaman awal.
+  function requireAuth() { const user = getUser(); if (!user) { window.location.replace('dashboard.html'); return false; } window.dispatchEvent(new CustomEvent('viska-auth-ready', { detail: user })); return true; }
   function getRankings() { seedDemoUsers(); return readUsers().map(normalizeUser).sort((a, b) => b.xp - a.xp || a.name.localeCompare(b.name)); }
   function updateProfile(changes) {
     const user = getUser(); if (!user) throw Error('Sesi tidak ditemukan.');

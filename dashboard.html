@@ -66,6 +66,25 @@
             background-position: center;
             background-size: cover;
         }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { overflow-x: hidden; }
+
+        @media (max-width: 639px) {
+            header { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+            header .brand-viska { font-size: 1.65rem; }
+            header > a:last-child { padding: .65rem 1rem; font-size: .72rem; }
+            main section { min-height: auto !important; padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
+            main section:first-child { min-height: calc(100svh - 68px) !important; }
+            .batik { height: 17rem; }
+            .feature-card, .feature-card--dark { border-radius: 1.5rem !important; padding: 1.5rem !important; }
+        }
+
+        @media (max-width: 380px) {
+            header { padding-left: 1rem !important; padding-right: 1rem !important; }
+            header .brand-viska { font-size: 1.45rem; }
+            header > a:last-child { padding: .6rem .8rem; }
+        }
     </style>
 </head>
 
@@ -256,7 +275,7 @@
         </section>
     </main>
     <footer class="border-t border-[#ead9b6] px-5 py-8 text-center text-sm text-[#664d42]">© 2026 Viska · Sinau ,
-        merawat budaya. Made by <a href="https://github.com/viska" target="_blank"
+        merawat budaya. Made by <a href="https://github.com/Alfayed7718/VISKA" target="_blank"
             class="text-leaf hover:underline">Dody Al Fayed</a></footer>
 </body>
 

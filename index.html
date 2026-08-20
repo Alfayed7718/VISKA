@@ -256,6 +256,32 @@
         text-align: left;
       }
     }
+
+    /* Menjaga aplikasi tetap simetris pada ponsel tanpa scroll mendatar. */
+    html { overflow-x: hidden; }
+
+    @media (max-width: 639px) {
+      header > div { gap: .75rem; }
+      #header-score, #header-coins { font-size: .75rem; }
+      .ranking-title-badge { width: 2.5rem; height: 2.5rem; }
+      .rank-showcase, #tab-ranking > div > .mt-6 > div {
+        gap: .5rem;
+        min-height: 5.5rem;
+        padding-left: 4.25rem;
+        background-position: .6rem center;
+        background-size: 3.1rem;
+      }
+      #rank-up-modal > div { max-height: calc(100svh - 2.5rem); overflow-y: auto; }
+      #login-modal > div { width: 100%; max-width: 28rem; }
+      .viska-nav .tab-button { min-width: 0; line-height: 1.05; overflow-wrap: anywhere; }
+    }
+
+    @media (max-width: 380px) {
+      main { padding-left: .85rem !important; padding-right: .85rem !important; }
+      .viska-nav .tab-button { font-size: .65rem; }
+      #header-score { display: none; }
+      header .asset-icon-frame { transform: scale(.9); }
+    }
   </style>
 </head>
 
