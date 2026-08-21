@@ -8,12 +8,10 @@
   <title>Viska — Belajar Bahasa Jawa</title>
   <script src="./public/auth.js"></script>
   <script>
-    // Halaman pembelajaran hanya dapat dibuka setelah sesi akun Viska tersedia.
     window.ViskaAuth.requireAuth();
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Config warna dan box-shadow kustom Tailwind CSS
     tailwind.config = {
       theme: {
         extend: {
@@ -79,7 +77,7 @@
     }
 
     .wheel-spinning {
-      animation: spin 1.05s cubic-bezier(.15, .75, .2, 1) both;
+      animation: spin var(--spin-duration, 1.05s) cubic-bezier(.15, .75, .2, 1) both;
     }
 
     .asset-icon-frame {
@@ -117,7 +115,7 @@
     }
 
     .rank-showcase,
-    #tab-ranking > div > .mt-6 > div {
+    #rank-showcase-carousel>div {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
       gap: .75rem;
@@ -132,14 +130,34 @@
     }
 
     .rank-showcase:hover,
-    #tab-ranking > div > .mt-6 > div:hover {
+    #rank-showcase-carousel>div:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 20px rgb(33 33 33 / .08);
     }
 
-    #tab-ranking > div > .mt-6 > div:nth-child(1) { --rank-image: url('aset/logo_rank_mangarah_tari.png'); }
-    #tab-ranking > div > .mt-6 > div:nth-child(2) { --rank-image: url('aset/logo_rank_prajurit.png'); }
-    #tab-ranking > div > .mt-6 > div:nth-child(3) { --rank-image: url('aset/logo_rank_raja_jawa.png'); }
+    .rank-showcase[data-rank="Mangarah Tari"] {
+      --rank-image: url('aset/logo_rank_mangarah_tari.png');
+    }
+
+    .rank-showcase[data-rank="Prajurit"] {
+      --rank-image: url('aset/logo_rank_prajurit.png');
+    }
+
+    .rank-showcase[data-rank="Raja Jawa"] {
+      --rank-image: url('aset/logo_rank_raja_jawa.png');
+    }
+
+    #rank-showcase-carousel>div:nth-child(1) {
+      --rank-image: url('aset/logo_rank_mangarah_tari.png');
+    }
+
+    #rank-showcase-carousel>div:nth-child(2) {
+      --rank-image: url('aset/logo_rank_prajurit.png');
+    }
+
+    #rank-showcase-carousel>div:nth-child(3) {
+      --rank-image: url('aset/logo_rank_raja_jawa.png');
+    }
 
     .rank-showcase img {
       width: 4rem;
@@ -147,35 +165,28 @@
       object-fit: contain;
     }
 
-    .ranking-title-badge {
-      display: inline-grid;
-      width: 3rem;
-      height: 3rem;
-      flex: 0 0 auto;
-      place-items: center;
-      overflow: hidden;
-      border: 1px solid rgb(255 255 255 / .7);
-      border-radius: .9rem;
-      background: var(--title-background, #fff8e8);
-      box-shadow: 0 3px 10px rgb(33 33 33 / .1);
-    }
-
-    .ranking-title-badge img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
     @media (max-width: 420px) {
-      .ranking-avatar { width: 2.75rem; height: 2.75rem; border-width: 3px; }
-      .ranking-title-badge { display: none; }
+      .ranking-avatar {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-width: 3px;
+      }
     }
 
-    .rank-up-card { animation: rank-up-pop .42s cubic-bezier(.2, 1.25, .4, 1) both; }
+    .rank-up-card {
+      animation: rank-up-pop .42s cubic-bezier(.2, 1.25, .4, 1) both;
+    }
 
     @keyframes rank-up-pop {
-      from { opacity: 0; transform: scale(.78) translateY(24px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+      from {
+        opacity: 0;
+        transform: scale(.78) translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     /* Saat permainan berlangsung, area belajar mendapat ruang penuh tanpa navigasi. */
@@ -258,39 +269,93 @@
     }
 
     /* Menjaga aplikasi tetap simetris pada ponsel tanpa scroll mendatar. */
-    html { overflow-x: hidden; }
+    html {
+      overflow-x: hidden;
+    }
 
     @media (max-width: 639px) {
-      header > div { gap: .75rem; }
-      #header-score, #header-coins { font-size: .75rem; }
-      .ranking-title-badge { width: 2.5rem; height: 2.5rem; }
-      .rank-showcase, #tab-ranking > div > .mt-6 > div {
+      header>div {
+        gap: .75rem;
+      }
+
+      #header-score,
+      #header-coins {
+        font-size: .75rem;
+      }
+
+      .rank-showcase,
+      #rank-showcase-carousel>div {
         gap: .5rem;
         min-height: 5.5rem;
         padding-left: 4.25rem;
         background-position: .6rem center;
         background-size: 3.1rem;
       }
-      #rank-up-modal > div { max-height: calc(100svh - 2.5rem); overflow-y: auto; }
-      #login-modal > div { width: 100%; max-width: 28rem; }
-      .viska-nav .tab-button { min-width: 0; line-height: 1.05; overflow-wrap: anywhere; }
+
+      .rank-showcase-carousel {
+        display: flex;
+        width: calc(100% + 2rem);
+        margin-left: -1rem;
+        gap: .75rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: .25rem 0;
+      }
+
+      .rank-showcase-carousel::-webkit-scrollbar {
+        display: none;
+      }
+
+      .rank-showcase-carousel .rank-showcase {
+        width: 78vw;
+        flex: 0 0 78vw;
+      }
+
+      #rank-up-modal>div {
+        max-height: calc(100svh - 2.5rem);
+        overflow-y: auto;
+      }
+
+      #login-modal>div {
+        width: 100%;
+        max-width: 28rem;
+      }
+
+      .viska-nav .tab-button {
+        min-width: 0;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+      }
     }
 
     @media (max-width: 380px) {
-      main { padding-left: .85rem !important; padding-right: .85rem !important; }
-      .viska-nav .tab-button { font-size: .65rem; }
-      #header-score { display: none; }
-      header .asset-icon-frame { transform: scale(.9); }
+      main {
+        padding-left: .85rem !important;
+        padding-right: .85rem !important;
+      }
+
+      .viska-nav .tab-button {
+        font-size: .65rem;
+      }
+
+      #header-score {
+        display: none;
+      }
+
+      header .asset-icon-frame {
+        transform: scale(.9);
+      }
     }
   </style>
 </head>
 
 <body class="min-h-screen bg-[#f7f7f7] font-sans text-ink">
+  <audio id="bgm" src="aset/BGM.mp3" autoplay loop preload="auto"></audio>
+  <audio id="spin-sfx" src="aset/sfx%20spin.mp3" preload="auto"></audio>
+  <audio id="wrong-sfx" src="aset/SFX%20salah.mp3" preload="auto"></audio>
   <div class="min-h-screen">
 
-    <!-- ========================================== -->
-    <!-- HEADER & INDIKATOR STATISTIK UTAMA         -->
-    <!-- ========================================== -->
+    <!-- HEADER & INDIKATOR STATISTIK UTAMA -->
     <header class="sticky top-0 z-30 border-b-2 border-slate-100 bg-white/95 backdrop-blur">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <a href="#" class="flex items-center gap-2.5" onclick="switchTab('belajar'); return false;">
@@ -317,9 +382,7 @@
 
     <main class="mx-auto max-w-6xl px-4 pb-28 pt-7 sm:px-6">
 
-      <!-- ========================================== -->
-      <!-- TAB 1 - BELAJAR (MODE UTAMA / QUIZ)        -->
-      <!-- ========================================== -->
+      <!-- TAB 1 - BELAJAR -->
       <section id="tab-belajar" class="tab-panel">
         <div id="learning-map">
           <div class="mb-8">
@@ -351,7 +414,7 @@
           <p class="mt-8 text-center text-sm font-bold text-slate-400">Ketuk level untuk memulai latihan</p>
         </div>
 
-        <!-- Area Soal / Quiz Belajar -->
+        <!-- Area Soal-->
         <div id="quiz-area" class="mx-auto hidden max-w-2xl">
           <div class="mb-7 flex items-center gap-4">
             <button onclick="exitLesson()" class="text-2xl font-bold text-slate-400 hover:text-ink">×</button>
@@ -369,9 +432,7 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 2 - KAMUS BAHASA JAWA                  -->
-      <!-- ========================================== -->
+      <!-- TAB 2 - KAMUS -->
       <section id="tab-kamus" class="tab-panel hidden">
         <div class="mb-8 rounded-3xl bg-gradient-to-br from-leaf to-[#79db27] p-7 text-white sm:p-10">
           <p class="mb-2 text-sm font-bold uppercase tracking-[.18em] text-white/75">Kamus Undhak usuk basa</p>
@@ -390,22 +451,36 @@
         </div>
         <aside id="language-guide" class="mb-8 hidden rounded-3xl border-2 border-[#dce7d1] bg-white p-6 shadow-sm">
           <div class="flex items-start justify-between gap-4">
-            <div><p class="text-sm font-bold uppercase tracking-[.16em] text-leaf">Panduan singkat</p><h2 class="mt-1 text-2xl font-extrabold">Kapan memakai tiap tingkat bahasa?</h2></div>
-            <button type="button" onclick="toggleLanguageGuide()" class="text-2xl font-bold text-slate-400 hover:text-ink" aria-label="Tutup panduan">×</button>
+            <div>
+              <p class="text-sm font-bold uppercase tracking-[.16em] text-leaf">Panduan singkat</p>
+              <h2 class="mt-1 text-2xl font-extrabold">Kapan memakai tiap tingkat bahasa?</h2>
+            </div>
+            <button type="button" onclick="toggleLanguageGuide()"
+              class="text-2xl font-bold text-slate-400 hover:text-ink" aria-label="Tutup panduan">×</button>
           </div>
           <div class="mt-5 grid gap-3 md:grid-cols-2">
-            <article class="rounded-2xl bg-[#f4f1ea] p-4"><b class="text-leaf">Ngoko</b><p class="mt-1 text-sm leading-6 text-slate-600">Untuk teman sebaya, adik, atau suasana sangat akrab. Hindari kepada orang yang lebih tua atau dihormati.</p></article>
-            <article class="rounded-2xl bg-[#fff6df] p-4"><b class="text-[#9b6816]">Krama Madya</b><p class="mt-1 text-sm leading-6 text-slate-600">Pilihan sopan yang netral untuk orang yang belum terlalu akrab atau situasi sehari-hari yang formal.</p></article>
-            <article class="rounded-2xl bg-[#edf5f1] p-4"><b class="text-sky">Krama Inggil</b><p class="mt-1 text-sm leading-6 text-slate-600">Gunakan untuk berbicara dengan orang tua, guru, tamu, atau tokoh yang dihormati.</p></article>
-            <article class="rounded-2xl bg-[#fff1ed] p-4"><b class="text-coral">Tips</b><p class="mt-1 text-sm leading-6 text-slate-600">Mulailah dari lawan bicara dan situasinya. Bila ragu, gunakan Krama Madya atau Krama Inggil agar tetap santun.</p></article>
+            <article class="rounded-2xl bg-[#f4f1ea] p-4"><b class="text-leaf">Ngoko</b>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Untuk teman sebaya, adik, atau suasana sangat akrab.
+                Hindari kepada orang yang lebih tua atau dihormati.</p>
+            </article>
+            <article class="rounded-2xl bg-[#fff6df] p-4"><b class="text-[#9b6816]">Krama Madya</b>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Pilihan sopan yang netral untuk orang yang belum terlalu
+                akrab atau situasi sehari-hari yang formal.</p>
+            </article>
+            <article class="rounded-2xl bg-[#edf5f1] p-4"><b class="text-sky">Krama Inggil</b>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Gunakan untuk berbicara dengan orang tua, guru, tamu,
+                atau tokoh yang dihormati.</p>
+            </article>
+            <article class="rounded-2xl bg-[#fff1ed] p-4"><b class="text-coral">Tips</b>
+              <p class="mt-1 text-sm leading-6 text-slate-600">Mulailah dari lawan bicara dan situasinya. Bila ragu,
+                gunakan Krama Madya atau Krama Inggil agar tetap santun.</p>
+            </article>
           </div>
         </aside>
         <div id="dictionary-list" class="grid gap-4 md:grid-cols-2"></div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 3 - SPIN MODE (GRATIS + ITEM BUFF)     -->
-      <!-- ========================================== -->
+      <!-- TAB 3 - Roda Jawa -->
       <section id="tab-spin" class="tab-panel hidden">
         <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr] lg:items-start">
           <!-- Sidebar Statistik Spin & Inventaris Item -->
@@ -461,7 +536,7 @@
               Roda</button>
           </div>
 
-          <!-- Card Tantangan / Soal Spin -->
+          <!--Soal Spin -->
           <div id="spin-question-card" class="hidden rounded-3xl border-2 border-slate-200 bg-white p-7 sm:p-10">
             <div class="flex items-center justify-between">
               <div>
@@ -486,16 +561,14 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 4 - LEADERBOARD (RANKING)              -->
-      <!-- ========================================== -->
+      <!-- TAB 4 - Papan Score -->
       <section id="tab-ranking" class="tab-panel hidden">
         <div class="mx-auto max-w-2xl">
           <p class="text-sm font-bold uppercase tracking-[.16em] text-sky">Hall of fame</p>
           <h1 id="ranking-rank-heading" class="mt-1 text-3xl font-extrabold">Papan Score</h1>
           <p id="ranking-rank-description" class="mt-1 text-slate-500">Hanya akun Viska yang terdaftar di papan
             peringkat.</p>
-          <div class="mt-6 grid gap-3 sm:grid-cols-3">
+          <div id="rank-showcase-carousel" class="rank-showcase-carousel mt-6 grid gap-3 sm:grid-cols-3">
             <div class="rounded-2xl border border-[#d8c4a4] bg-[#fff8e8] p-4"><b class="text-leaf">I · Mangarah Tari</b>
             </div>
             <div class="rounded-2xl border border-[#b9d9d2] bg-[#f0faf7] p-4"><b class="text-sky">II · Prajurit</b>
@@ -522,9 +595,7 @@
         </div>
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 5 - TOKO (SHOP ITEM)                   -->
-      <!-- ========================================== -->
+      <!-- TAB 5 - TOKO -->
       <section id="tab-toko" class="tab-panel hidden">
         <div class="mx-auto max-w-2xl">
           <h1 class="text-3xl font-extrabold">Toko Viska</h1>
@@ -535,9 +606,7 @@
             <p class="mt-1 text-sm text-slate-500">Bantuan sekali pakai untuk menjaga progres pada mode Spin.</p>
           </div>
           <div class="mt-4 grid gap-4 sm:grid-cols-2">
-            <!-- ITEM 1: ISI NYAWA -->
 
-            <!-- ITEM 2: SKIP SOAL SPIN -->
             <div class="flex flex-col justify-between rounded-2xl border-2 border-slate-200 bg-white p-5">
               <div>
                 <span class="asset-icon-frame h-17 w-14"><img src="aset/Skip.png" alt="Skip Soal"></span>
@@ -551,7 +620,6 @@
                     alt="Koin"></span> 15)</button>
             </div>
 
-            <!-- ITEM 3: PERISAI Xp SPIN -->
             <div class="flex flex-col justify-between rounded-2xl border-2 border-slate-200 bg-white p-5">
               <div>
                 <span class="asset-icon-frame h-17 w-14"><img src="aset/Perisai.png" alt="Perisai"></span>
@@ -576,8 +644,8 @@
             <div class="h-14 w-14 overflow-hidden rounded-full border-4 border-[#7a4b27]"><img class="avatar-photo"
                 src="aset/foto_kris.png" alt="Avatar Kris"></div>
             <h3 class="mt-3 font-extrabold">Avatar Kris</h3>
-            <p class="mt-1 text-sm text-slate-500">Foto profil Kris yang dapat dibeli pertama.</p><button
-              id="shop-avatar_kris" onclick="buyCosmetic('avatar_kris')"
+            <p class="mt-1 text-sm text-slate-500">Foto profil Kris.</p><button id="shop-avatar_kris"
+              onclick="buyCosmetic('avatar_kris')"
               class="btn-3d mt-4 w-full rounded-xl border-2 border-[#5e351c] bg-leaf py-2.5 font-extrabold text-white shadow-button">Beli
               (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
                   alt="Koin"></span> 35)</button>
@@ -586,8 +654,8 @@
             <div class="h-14 w-14 overflow-hidden rounded-full border-4 border-[#d89a35]"><img class="avatar-photo"
                 src="aset/foto_wayang.png" alt="Avatar Wayang"></div>
             <h3 class="mt-3 font-extrabold">Avatar Wayang</h3>
-            <p class="mt-1 text-sm text-slate-500">Foto profil Wayang sebagai koleksi terakhir.</p><button
-              id="shop-avatar_wayang" onclick="buyCosmetic('avatar_wayang')"
+            <p class="mt-1 text-sm text-slate-500">Foto profil Wayang.</p><button id="shop-avatar_wayang"
+              onclick="buyCosmetic('avatar_wayang')"
               class="btn-3d mt-4 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-2.5 font-extrabold text-ink shadow-sunbutton">Beli
               (<span class="inline-flex align-middle asset-icon-frame h-7 w-5"><img src="aset/Coins.png"
                   alt="Koin"></span> 70)</button>
@@ -614,9 +682,7 @@
 
       </section>
 
-      <!-- ========================================== -->
-      <!-- TAB 6 - PROFIL PENGGUNA                    -->
-      <!-- ========================================== -->
+      <!-- TAB 6 - PROFIL -->
       <section id="tab-profil" class="tab-panel hidden">
         <div class="mx-auto max-w-xl rounded-3xl border-2 border-slate-200 bg-white p-7 text-center">
           <div id="profile-avatar"
@@ -643,7 +709,8 @@
 
           <div class="mt-6 rounded-2xl bg-[#fff8e8] p-5 text-left">
             <div class="flex items-center justify-between"><b id="profile-rank-level" class="text-leaf">Rank I ·
-                Mangarah Tari</b><span id="rank-progress-text" class="text-sm font-bold text-slate-500">0 / 501 XP</span>
+                Mangarah Tari</b><span id="rank-progress-text" class="text-sm font-bold text-slate-500">0 / 501
+                XP</span>
             </div>
             <div class="mt-3 h-3 overflow-hidden rounded-full bg-[#ead9b6]">
               <div id="rank-progress-bar" class="h-full rounded-full bg-gradient-to-r from-leaf to-sun"
@@ -674,19 +741,37 @@
 
     </main>
 
-    <div id="rank-up-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="rank-up-title">
-      <div class="rank-up-card w-full max-w-sm rounded-3xl border-2 border-[#e9d08d] bg-[#fffaf0] p-7 text-center shadow-2xl">
+    <div id="rank-up-modal"
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 p-5 backdrop-blur-sm" role="dialog"
+      aria-modal="true" aria-labelledby="rank-up-title">
+      <div
+        class="rank-up-card w-full max-w-sm rounded-3xl border-2 border-[#e9d08d] bg-[#fffaf0] p-7 text-center shadow-2xl">
         <p class="text-xs font-extrabold uppercase tracking-[.18em] text-[#a56b09]">Gelar baru terbuka</p>
         <img id="rank-up-image" class="mx-auto mt-4 h-28 w-28 object-contain" src="aset/logo_rank_prajurit.png" alt="">
         <h2 id="rank-up-title" class="mt-3 text-2xl font-black text-leaf">Selamat!</h2>
         <p id="rank-up-description" class="mt-2 text-slate-600"></p>
-        <button type="button" onclick="closeRankUpModal()" class="btn-3d mt-6 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-3 font-extrabold text-ink shadow-sunbutton">Lanjutkan</button>
+        <button type="button" onclick="closeRankUpModal()"
+          class="btn-3d mt-6 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-3 font-extrabold text-ink shadow-sunbutton">Lanjutkan</button>
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- BOTTOM NAVIGATION BAR                      -->
-    <!-- ========================================== -->
+    <div id="notification-modal"
+      class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-950/50 p-5 backdrop-blur-sm" role="dialog"
+      aria-modal="true" aria-labelledby="notification-title">
+      <div
+        class="rank-up-card w-full max-w-sm rounded-3xl border-2 border-[#e9d08d] bg-[#fffaf0] p-7 text-center shadow-2xl">
+        <p id="notification-label" class="text-xs font-extrabold uppercase tracking-[.18em] text-[#a56b09]">
+          Pemberitahuan</p>
+        <div id="notification-icon"
+          class="mx-auto mt-4 grid h-16 w-16 place-items-center rounded-full bg-mint text-3xl">✓</div>
+        <h2 id="notification-title" class="mt-4 text-2xl font-black text-leaf">Berhasil</h2>
+        <p id="notification-description" class="mt-2 text-slate-600"></p>
+        <button type="button" onclick="closeNotificationModal()"
+          class="btn-3d mt-6 w-full rounded-xl border-2 border-[#ae7621] bg-sun py-3 font-extrabold text-ink shadow-sunbutton">Lanjutkan</button>
+      </div>
+    </div>
+
+    <!-- Navbar -->
     <nav class="viska-nav fixed bottom-0 left-0 right-0 z-30 border-t-2 border-slate-100 bg-white">
       <div class="mx-auto grid max-w-2xl grid-cols-6 px-1">
         <button data-tab="belajar"
@@ -724,17 +809,37 @@
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- JAVASCRIPT LOGIC SYSTEM                    -->
-  <!-- ========================================== -->
+  <!-- Logika JS -->
   <script>
-    // --- 1. STATE MANAGEMENT ---
+    // --- 1. Pengelolaan status ---
     let currentUser = ViskaAuth.getUser();
     let score = 0;
     let coins = 0;
     let userTitle = 'Mangarah Tari';
     let rankings = [];
     let lastRankLevel = null;
+    const bgm = document.getElementById('bgm');
+    const spinSfx = document.getElementById('spin-sfx');
+    const wrongSfx = document.getElementById('wrong-sfx');
+
+    // Interaksi autoplay BGM.
+    function startBgm() {
+      if (!bgm) return;
+      bgm.volume = 0.35;
+      bgm.play().catch(() => { });
+    }
+
+    startBgm();
+    ['pointerdown', 'keydown', 'touchstart'].forEach(eventName => {
+      document.addEventListener(eventName, startBgm, { once: true, passive: true });
+    });
+
+    function playSfx(audio) {
+      if (!audio) return;
+      audio.pause();
+      audio.currentTime = 0;
+      audio.play().catch(() => { });
+    }
 
     window.addEventListener('viska-auth-ready', function (event) {
       currentUser = event.detail;
@@ -782,10 +887,53 @@
       modal.classList.remove('flex');
     }
 
+    function showNotification({ label = 'Pemberitahuan', title = 'Berhasil', message = '', type = 'success' }) {
+      const modal = document.getElementById('notification-modal');
+      const icon = document.getElementById('notification-icon');
+      document.getElementById('notification-label').textContent = label;
+      document.getElementById('notification-title').textContent = title;
+      document.getElementById('notification-description').textContent = message;
+      icon.textContent = type === 'error' ? '!' : type === 'info' ? 'i' : '✓';
+      icon.className = `mx-auto mt-4 grid h-16 w-16 place-items-center rounded-full text-3xl ${type === 'error' ? 'bg-red-100 text-coral' : type === 'info' ? 'bg-sky/20 text-sky' : 'bg-mint text-leaf'}`;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeNotificationModal() {
+      const modal = document.getElementById('notification-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
     function loadRankings() {
       rankings = ViskaAuth.getRankings();
       renderRanking();
     }
+
+    function updateRankShowcase(activeRank) {
+      const carousel = document.getElementById('rank-showcase-carousel');
+      if (!carousel || !activeRank) return;
+      const ranks = ['Mangarah Tari', 'Prajurit', 'Raja Jawa'];
+      const activeIndex = ranks.indexOf(activeRank);
+      Array.from(carousel.children).forEach((card, index) => {
+        card.classList.add('rank-showcase');
+        card.dataset.rank = ranks[index];
+        card.style.order = window.matchMedia('(max-width: 639px)').matches
+          ? String((index - activeIndex + 4) % 3)
+          : '';
+      });
+      requestAnimationFrame(() => {
+        const isMobile = window.matchMedia('(max-width: 639px)').matches;
+        const activeCard = Array.from(carousel.children).find(card => card.dataset.rank === activeRank);
+        carousel.scrollLeft = isMobile && activeCard
+          ? activeCard.offsetLeft - ((carousel.clientWidth - activeCard.clientWidth) / 2)
+          : 0;
+      });
+    }
+
+    window.matchMedia('(max-width: 639px)').addEventListener('change', () => {
+      updateRankShowcase(currentUser ? rankFor(currentUser.xp).name : null);
+    });
 
     function renderRanking() {
       const rankingList = document.getElementById('ranking-list');
@@ -793,9 +941,8 @@
       const avatarImages = { batik: 'aset/foto_batik.png', kris: 'aset/foto_kris.png', wayang: 'aset/foto_wayang.png' };
       const avatarBackgrounds = { batik: '#386641', kris: '#C88A35', wayang: '#1E3A2B' };
       const borderColors = { nila: '#4338ca', emas: '#d89a35', jade: '#2f6d62' };
-      const titleImages = { 'Mangarah Tari': 'aset/logo_rank_mangarah_tari.png', Prajurit: 'aset/logo_rank_prajurit.png', 'Raja Jawa': 'aset/logo_rank_raja_jawa.png' };
-      const titleBackgrounds = { 'Mangarah Tari': '#fff8e8', Prajurit: '#f0faf7', 'Raja Jawa': '#fff9e6' };
       const activeRank = currentUser ? rankFor(currentUser.xp).name : null;
+      updateRankShowcase(activeRank);
       const heading = document.getElementById('ranking-rank-heading');
       const description = document.getElementById('ranking-rank-description');
       if (activeRank) {
@@ -816,8 +963,6 @@
           <span class="asset-icon-frame h-11 w-11 shrink-10 rounded-full bg-slate-100">${medal ? `<img src="aset/${medal}" alt="Peringkat ${index + 1}">` : `<b class="font-black text-slate-600">${index + 1}</b>`}</span>
           <span class="ranking-avatar" style="--avatar-background: ${avatarBackground}; --avatar-border: ${borderColor}"><img class="avatar-photo" src="${avatar}" alt="Foto profil ${escapeHtml(player.name)}"></span>
           <div class="min-w-0 flex-1"><p class="truncate font-extrabold">${escapeHtml(player.name)}${isCurrentUser ? ' <span class="text-xs text-leaf">(Kamu)</span>' : ''}</p><p class="text-sm font-bold text-slate-400">${player.xp} XP · ${title}</p></div>
-          <span class="ranking-title-badge" style="--title-background: ${titleBackgrounds[title]}"><img src="${titleImages[title]}" alt="Gelar ${title}"></span>
-          <span class="text-sm font-black text-slate-400">#${index + 1}</span>
         </article>`;
       }).join('') || '<p class="rounded-2xl bg-white p-5 text-center text-slate-400">Belum ada pengguna lain di ruang Score ini.</p>';
     }
@@ -838,7 +983,7 @@
         applySpinInventory(currentUser);
         return true;
       } catch (error) {
-        alert(error.message);
+        showNotification({ label: 'Tidak dapat menggunakan item', title: 'Terjadi kendala', message: error.message, type: 'error' });
         return false;
       }
     }
@@ -944,7 +1089,6 @@
 
     // data Soal Spin
     const spinQuestions = [
-      // Easy: kosakata Ngoko yang umum.
       { difficulty: 'Mudah', word: 'mangan', answer: 'makan', options: ['makan', 'minum', 'tidur', 'pergi'] },
       { difficulty: 'Mudah', word: 'turu', answer: 'tidur', options: ['datang', 'tidur', 'pulang', 'mandi'] },
       { difficulty: 'Mudah', word: 'banyu', answer: 'air', options: ['uang', 'air', 'nasi', 'hutan'] },
@@ -956,7 +1100,6 @@
       { difficulty: 'Mudah', word: 'maca', answer: 'membaca', options: ['bertanya', 'membaca', 'berbicara', 'melihat'] },
       { difficulty: 'Mudah', word: 'dhuwit', answer: 'uang', options: ['uang', 'usia', 'nama', 'kepala'] },
 
-      // Medium: padanan Krama Madya dan Krama Inggil yang sering digunakan.
       { difficulty: 'Normal', word: 'nedha', answer: 'makan', options: ['minum', 'makan', 'tidur', 'mandi'] },
       { difficulty: 'Normal', word: 'kesah', answer: 'pergi', options: ['datang', 'pulang', 'pergi', 'singgah'] },
       { difficulty: 'Normal', word: 'rawuh', answer: 'datang', options: ['datang', 'pulang', 'berdiri', 'tunggu'] },
@@ -968,7 +1111,6 @@
       { difficulty: 'Normal', word: 'tebih', answer: 'jauh', options: ['berat', 'jauh', 'dingin', 'merah'] },
       { difficulty: 'Normal', word: 'artos', answer: 'uang', options: ['usia', 'uang', 'nama', 'kepala'] },
 
-      // Sangat Sulit: kosakata jarang dan pilihan dengan arti yang berdekatan.
       { difficulty: 'Sulit', word: 'disareake', answer: 'dikubur', options: ['dikubur', 'singgah', 'mengantarkan', 'pulang'] },
       { difficulty: 'Sulit', word: 'ndherekaken', answer: 'mengantarkan', options: ['mengantarkan', 'mengadu', 'berbicara', 'meminta'] },
       { difficulty: 'Sulit', word: 'kersanipun', answer: 'biar', options: ['karena', 'biar', 'boleh', 'ada'] },
@@ -981,18 +1123,18 @@
       { difficulty: 'Sulit', word: 'nyuwun pirsa', answer: 'bertanya', options: ['membaca', 'melihat', 'bertanya', 'meminta'] }
     ];
 
-    // System Spin State
+    // status spin
     let spinPoints = 0;
     let spinCoins = 0;
     let spinStreak = 0;
     let currentSpin = null;
     let spinAnswered = false;
 
-    // Base Reward per Soal Spin
+    // Base Reward Spin
     const BASE_SPIN_POINTS = 10;
     const BASE_SPIN_COINS = 2;
 
-    // --- 2. SYSTEM UTILS & UI UPDATE ---
+    // ---2. sistem utilitas & UI ---
     function updateHeaderStats() {
       document.getElementById('header-score').textContent = `${score} XP`;
       document.getElementById('header-coins').textContent = coins;
@@ -1021,7 +1163,7 @@
       document.getElementById('spin-multiplier').textContent = `${multiplier.toFixed(spinStreak ? 2 : 0)}x`;
       document.getElementById('cashout-btn').disabled = (spinPoints === 0 && spinCoins === 0);
 
-      // Update inventaris item Spin
+      // Update item Spin
       document.getElementById('inventory-skip').textContent = itemSkipCount;
       document.getElementById('inventory-shield').textContent = itemShieldCount;
       document.getElementById('skip-btn-count').textContent = itemSkipCount;
@@ -1049,7 +1191,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Sembunyikan navigasi selama pengguna fokus mengerjakan soal.
+    // Sembunyikan navbar.
     function setGameplayNavigation(isActive) {
       document.body.classList.toggle('game-focus', isActive);
       document.querySelector('.viska-nav').setAttribute('aria-hidden', String(isActive));
@@ -1059,7 +1201,7 @@
       button.addEventListener('click', () => switchTab(button.dataset.tab));
     });
 
-    // --- 3. KAMUS LOGIC ---
+    // --- 3. KAMUS ---
     function toggleLanguageGuide() { document.getElementById('language-guide').classList.toggle('hidden'); }
 
     function renderDictionary() {
@@ -1085,8 +1227,7 @@
       }).join('') : '<p class="col-span-full py-10 text-center font-semibold text-slate-400">Kata belum ditemukan. Coba kata lain, ya.</p>';
     }
 
-    // Variable state untuk melacak level yang terbuka & xp sementara
-    let unlockedLessons = [0]; // Level 1 (indeks 0) terbuka otomatis
+    let unlockedLessons = [0];
 
     function loadLessonProgress() {
       const savedLevels = Array.isArray(currentUser?.unlockedLessons) ? currentUser.unlockedLessons : [0];
@@ -1099,9 +1240,8 @@
     // --- 4. BELAJAR LOGIC ---
     function startLesson(index) {
       if (!ensureLoggedIn()) return;
-      // Validasi: Cek apakah level yang diklik sudah terbuka
       if (!unlockedLessons.includes(index)) {
-        alert(`Level ${index + 1} masih terkunci! Selesaikan level sebelumnya terlebih dahulu.`);
+        showNotification({ label: 'Level terkunci', title: 'Belum bisa dibuka', message: `Selesaikan level sebelumnya untuk membuka Level ${index + 1}.`, type: 'info' });
         return;
       }
 
@@ -1109,8 +1249,8 @@
       questionIndex = 0;
       hearts = 3;
       answered = false;
-      currentLessonXP = 0; // Reset XP sementara saat level dimulai
-      currentCoinsEarned = 0; // Reset koin sementara saat level dimulai
+      currentLessonXP = 0;
+      currentCoinsEarned = 0;
       document.getElementById('learning-map').classList.add('hidden');
       document.getElementById('quiz-area').classList.remove('hidden');
       setGameplayNavigation(true);
@@ -1152,12 +1292,11 @@
 
       if (correct) {
         currentCoinsEarned += 5;
-        currentLessonXP += 5; // Jawaban benar menambah 5 XP ke potensi total
+        currentLessonXP += 5;
         feedback.className = 'mt-6 rounded-2xl bg-mint p-5 font-bold text-[#338000]';
         feedback.textContent = '✓ Hebat! Jawabanmu benar.';
       } else {
         hearts--;
-        // Kurangi potensi XP sebesar 5, gunakan Math.max agar tidak minus di bawah 0
         currentLessonXP = Math.max(0, currentLessonXP - 0);
         document.getElementById('hearts').textContent = hearts;
         feedback.className = 'mt-6 rounded-2xl bg-red-100 p-5 font-bold text-coral';
@@ -1171,33 +1310,30 @@
 
     function nextQuestion() {
       if (hearts <= 0) {
-        alert('Nyawamu habis. Level gagal. Coba lagi ya!');
+        showNotification({ label: 'Level gagal', title: 'Nyawamu habis', message: 'Coba lagi ya kamu pasti bisa menyelesaikannya!', type: 'error' });
         exitLesson();
         return;
       }
       questionIndex++;
 
-      // Gabungan pemeriksaan akhir level (XP & Koin)
       if (questionIndex >= lessons[lessonIndex].length) {
         score += currentLessonXP;
         coins += currentCoinsEarned;
 
-        // Buka Level Berikutnya
         const nextLevelIndex = lessonIndex + 1;
         if (nextLevelIndex < lessons.length && !unlockedLessons.includes(nextLevelIndex)) {
           unlockedLessons.push(nextLevelIndex);
         }
 
         updateHeaderStats();
-        renderLearningMap(); // Update tampilan tombol di UI (mengubah gembok 🔒 jadi level aktif)
-        alert(`Level selesai! Kamu memperoleh ${currentLessonXP} XP dan ${currentCoinsEarned} Koin.`);
+        renderLearningMap();
+        showNotification({ label: 'Level selesai', title: 'Hebat!', message: `Kamu memperoleh ${currentLessonXP} XP dan ${currentCoinsEarned} Koin.` });
         exitLesson();
       } else {
         showQuestion();
       }
     }
 
-    // Fungsi Render Peta Level (Menggunakan Inline CSS untuk menjamin efek pucat/abu-abu)
     function renderLearningMap() {
       const mapContainer = document.getElementById('level-buttons-container');
       if (!mapContainer) return;
@@ -1217,7 +1353,6 @@
         const icon = icons[i % icons.length];
 
         if (isUnlocked) {
-          // Tombol Aktif / Terbuka
           return `
             <button onclick="startLesson(${i})" class="btn-3d relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-b-4 border-2 ${style} text-white transition-all duration-200 hover:brightness-105 active:translate-y-1 cursor-pointer">
               <span class="text-3xl">${icon}</span>
@@ -1225,7 +1360,6 @@
             </button>
           `;
         } else {
-          // Tombol Pucat / Terkunci (warna dibuat lebih pucat via inline style)
           return `
               <button disabled style="background-color: rgba(226,232,240,0.7) !important; border-color: rgba(203,213,225,0.7) !important; color: rgba(100,116,139,0.85) !important; opacity: 0.7 !important; box-shadow: none !important; pointer-events: none !important; cursor: not-allowed !important;" class="relative z-10 mx-auto flex h-24 w-24 flex-col items-center justify-center rounded-[2rem] border-2 select-none">
                 <span class="asset-icon-frame h-14 w-14" style="opacity: 0.6;"><img src="aset/gembok_level.png" alt="Level terkunci"></span>
@@ -1235,10 +1369,9 @@
       }).join('');
     }
 
-    // Jalankan render awal saat script dimuat
     renderLearningMap();
 
-    // --- 5. SPIN LOGIC ---
+    // --- 5. SPIN ---
     function spinQuestion() {
       if (!ensureLoggedIn()) return;
       setGameplayNavigation(true);
@@ -1247,33 +1380,42 @@
       idle.classList.remove('hidden');
       document.getElementById('spin-question-card').classList.add('hidden');
       wheel.classList.remove('wheel-spinning');
-      void wheel.offsetWidth;
-      wheel.classList.add('wheel-spinning');
       document.getElementById('spin-btn').disabled = true;
 
-      setTimeout(() => {
-        currentSpin = spinQuestions[Math.floor(Math.random() * spinQuestions.length)];
-        spinAnswered = false;
-        idle.classList.add('hidden');
-        const card = document.getElementById('spin-question-card');
-        card.classList.remove('hidden');
-        const difficulty = document.getElementById('spin-difficulty');
-        difficulty.textContent = 'Tingkat: ' + currentSpin.difficulty;
-        difficulty.className = 'mt-1 text-xs font-extrabold ' +
-          (currentSpin.difficulty === 'Mudah' ? 'text-leaf' : currentSpin.difficulty === 'Normal' ? 'text-[#ca8a04]' : 'text-red-600');
-        document.getElementById('spin-word').textContent = '“' + currentSpin.word + '”';
-        document.getElementById('spin-options').innerHTML = currentSpin.options.map(function (option, i) {
-          return '<button type="button" data-option-index="' + i + '" class="spin-option rounded-2xl border-2 border-slate-200 bg-white p-4 text-left font-bold text-slate-600 transition hover:border-sky hover:bg-sky/5">' +
-            '<span class="mr-3 inline-grid h-7 w-7 place-items-center rounded-lg bg-slate-100 text-sm text-slate-500">' + String.fromCharCode(65 + i) + '</span>' +
-            option +
-            '</button>';
-        }).join('');
-        document.querySelectorAll('.spin-option').forEach(button => button.addEventListener('click', () => answerSpin(currentSpin.options[Number(button.dataset.optionIndex)])));
-        document.getElementById('spin-feedback').classList.add('hidden');
-        document.getElementById('spin-next').classList.add('hidden');
-        document.getElementById('spin-btn').disabled = false;
-        updateSpinStats();
-      }, 1050);
+      const beginSpin = () => {
+        const spinDuration = Number.isFinite(spinSfx.duration) && spinSfx.duration > 0 ? spinSfx.duration : 1.05;
+        wheel.style.setProperty('--spin-duration', `${spinDuration}s`);
+        void wheel.offsetWidth;
+        wheel.classList.add('wheel-spinning');
+        playSfx(spinSfx);
+
+        setTimeout(() => {
+          currentSpin = spinQuestions[Math.floor(Math.random() * spinQuestions.length)];
+          spinAnswered = false;
+          idle.classList.add('hidden');
+          const card = document.getElementById('spin-question-card');
+          card.classList.remove('hidden');
+          const difficulty = document.getElementById('spin-difficulty');
+          difficulty.textContent = 'Tingkat: ' + currentSpin.difficulty;
+          difficulty.className = 'mt-1 text-xs font-extrabold ' +
+            (currentSpin.difficulty === 'Mudah' ? 'text-leaf' : currentSpin.difficulty === 'Normal' ? 'text-[#ca8a04]' : 'text-red-600');
+          document.getElementById('spin-word').textContent = '“' + currentSpin.word + '”';
+          document.getElementById('spin-options').innerHTML = currentSpin.options.map(function (option, i) {
+            return '<button type="button" data-option-index="' + i + '" class="spin-option rounded-2xl border-2 border-slate-200 bg-white p-4 text-left font-bold text-slate-600 transition hover:border-sky hover:bg-sky/5">' +
+              '<span class="mr-3 inline-grid h-7 w-7 place-items-center rounded-lg bg-slate-100 text-sm text-slate-500">' + String.fromCharCode(65 + i) + '</span>' +
+              option +
+              '</button>';
+          }).join('');
+          document.querySelectorAll('.spin-option').forEach(button => button.addEventListener('click', () => answerSpin(currentSpin.options[Number(button.dataset.optionIndex)])));
+          document.getElementById('spin-feedback').classList.add('hidden');
+          document.getElementById('spin-next').classList.add('hidden');
+          document.getElementById('spin-btn').disabled = false;
+          updateSpinStats();
+        }, spinDuration * 1000);
+      };
+
+      if (spinSfx.readyState >= HTMLMediaElement.HAVE_METADATA) beginSpin();
+      else spinSfx.addEventListener('loadedmetadata', beginSpin, { once: true });
     }
 
     async function answerSpin(value) {
@@ -1294,6 +1436,7 @@
         feedback.className = 'mt-5 rounded-2xl bg-mint p-5 font-bold text-[#338000]';
         feedback.textContent = `✓ Benar! +${earnedPoints} XP & +${earnedCoins} Koin sesi ini. (Streak: ${spinStreak}x)`;
       } else {
+        playSfx(wrongSfx);
         if (itemShieldCount > 0 && await consumeSpinItem('shield')) {
           feedback.className = 'mt-5 rounded-2xl bg-sky/20 border-2 border-sky p-5 font-bold text-sky';
           feedback.textContent = `Perisai terpakai! Yang benar (“${currentSpin.answer}”), namun XP & koin sesimu aman.`;
@@ -1314,7 +1457,7 @@
     async function useSkipItem() {
       if (itemSkipCount > 0 && !spinAnswered) {
         if (!await consumeSpinItem('skip')) return;
-        alert('Soal berhasil dilewati!');
+        showNotification({ label: 'Power-up digunakan', title: 'Soal dilewati', message: 'Streak dan hadiah sesi kamu tetap aman.' });
         spinQuestion();
       }
     }
@@ -1324,7 +1467,7 @@
       if (!spinPoints && !spinCoins) return;
       score += spinPoints;
       coins += spinCoins;
-      alert(`Mantap! ${spinPoints} XP ditukar menjadi XP dan ${spinCoins} koin berhasil diklaim!`);
+      showNotification({ label: 'Roda Jawa', title: 'Hadiah berhasil diambil!', message: `${spinPoints} XP dan ${spinCoins} Koin sudah masuk ke akunmu.` });
       spinPoints = 0;
       spinCoins = 0;
       spinStreak = 0;
@@ -1334,7 +1477,7 @@
       setGameplayNavigation(false);
     }
 
-    // --- 6. TOKO LOGIC ---
+    // --- 6. TOKO ---
     async function buyItem(item) {
       if (!ensureLoggedIn()) return;
       try {
@@ -1343,8 +1486,8 @@
         coins = currentUser.coins;
         applySpinInventory(currentUser);
         updateHeaderStats();
-        alert(item === 'skip_item' ? 'Berhasil membeli 1x Skip Soal Spin!' : 'Berhasil membeli 1x Perisai Pelindung Spin!');
-      } catch (error) { alert(error.message); }
+        showNotification({ label: 'Toko Viska', title: 'Item berhasil dibeli!', message: item === 'skip_item' ? '1x Skip Soal Spin telah ditambahkan ke inventaris.' : '1x Perisai Pelindung Spin telah ditambahkan ke inventaris.' });
+      } catch (error) { showNotification({ label: 'Pembelian gagal', title: 'Terjadi kendala', message: error.message, type: 'error' }); }
     }
 
     async function buyCosmetic(item) {
@@ -1357,8 +1500,8 @@
         coins = currentUser.coins;
         renderProfileCosmetics();
         updateHeaderStats();
-        alert('Kosmetik berhasil dibeli dan langsung dipasang.');
-      } catch (error) { alert(error.message); }
+        showNotification({ label: 'Toko Viska', title: 'Kosmetik berhasil dibeli!', message: 'Kosmetik baru langsung dipasang di profilmu.' });
+      } catch (error) { showNotification({ label: 'Pembelian gagal', title: 'Terjadi kendala', message: error.message, type: 'error' }); }
       finally { button.disabled = false; renderShopButtons(); }
     }
 
@@ -1386,13 +1529,10 @@
         image.src = avatarImages[currentUser.avatar] || avatarImages.batik;
         el.style.borderImage = 'none';
       });
-      // bagian render kosmetik
       const collection = [...(currentUser.ownedAvatars || ['batik']).map(item => `Avatar ${item}`), ...(currentUser.ownedBorders || ['nila']).map(item => `Border ${item}`)];
-      // document.getElementById('profile-collection').innerHTML = collection.map(item => `<span class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600">${escapeHtml(item)}</span>`).join('');
       renderProfilePickers();
     }
 
-    // tombil milih kosmetik
     function renderProfilePickers() {
       if (!currentUser) return;
       const avatarPicker = document.getElementById('avatar-picker');
@@ -1412,10 +1552,10 @@
         currentUser = ViskaAuth.updateProfile(payload);
         renderProfileCosmetics();
         loadRankings();
-      } catch (error) { alert(error.message); }
+      } catch (error) { showNotification({ label: 'Profil', title: 'Terjadi kendala', message: error.message, type: 'error' }); }
     }
 
-    // --- 7. AKUN & PROFIL LOGIC ---
+    // --- 7. AKUN & PROFIL ---
     function openLoginModal() {
       window.location.href = 'login.html?next=index.html';
     }
@@ -1455,7 +1595,6 @@
       window.location.replace('dashboard.html');
     }
 
-    // Init App
     renderDictionary();
     renderLearningMap();
     loadRankings();

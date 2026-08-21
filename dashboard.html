@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Viska — Sinau Basa Jawa</title>
-    <!-- Import Google Fonts: Marcellus & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Marcellus&display=swap" rel="stylesheet">
@@ -46,13 +45,11 @@
             background-position: center;
         }
 
-        /* Style khusus untuk judul/logo Viska */
         .brand-viska {
             font-family: 'Inter', Arial, sans-serif !important;
             letter-spacing: -.02em !important;
         }
 
-        /* Ganti nilai --card-image pada tiap card untuk memakai gambar latar sendiri. */
         .feature-card {
             background-color: #fff;
             background-image: linear-gradient(135deg, rgb(255 255 255 / .91), rgb(255 255 255 / .78)), var(--card-image, none);
@@ -67,23 +64,66 @@
             background-size: cover;
         }
 
-        *, *::before, *::after { box-sizing: border-box; }
-        html, body { overflow-x: hidden; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+        }
 
         @media (max-width: 639px) {
-            header { padding-top: 1rem !important; padding-bottom: 1rem !important; }
-            header .brand-viska { font-size: 1.65rem; }
-            header > a:last-child { padding: .65rem 1rem; font-size: .72rem; }
-            main section { min-height: auto !important; padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
-            main section:first-child { min-height: calc(100svh - 68px) !important; }
-            .batik { height: 17rem; }
-            .feature-card, .feature-card--dark { border-radius: 1.5rem !important; padding: 1.5rem !important; }
+            .site-navbar {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            .site-navbar .brand-viska {
+                font-size: 1.65rem;
+            }
+
+            .site-navbar>a:last-child {
+                padding: .65rem 1rem;
+                font-size: .72rem;
+            }
+
+            main section {
+                min-height: auto !important;
+                padding-top: 3.5rem !important;
+                padding-bottom: 3.5rem !important;
+            }
+
+            #hero-section {
+                min-height: calc(100svh - 68px) !important;
+            }
+
+            .batik {
+                height: 17rem;
+            }
+
+            .feature-card,
+            .feature-card--dark {
+                border-radius: 1.5rem !important;
+                padding: 1.5rem !important;
+            }
         }
 
         @media (max-width: 380px) {
-            header { padding-left: 1rem !important; padding-right: 1rem !important; }
-            header .brand-viska { font-size: 1.45rem; }
-            header > a:last-child { padding: .6rem .8rem; }
+            .site-navbar {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .site-navbar .brand-viska {
+                font-size: 1.45rem;
+            }
+
+            .site-navbar>a:last-child {
+                padding: .6rem .8rem;
+            }
         }
     </style>
 </head>
@@ -95,45 +135,44 @@
             color: #fff !important;
         }
     </style>
-    <header
-        class="sticky top-0 z-50 bg-white/80 backdrop-blur-md mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+    <nav class="site-navbar fixed inset-x-0 top-0 z-50 mx-auto flex max-w-6xl items-center justify-between bg-white/80 px-5 py-5 backdrop-blur-md sm:px-8"
+        aria-label="Navigasi utama">
         <a href="dashboard.html" class="brand-viska text-3xl font-black text-maroon">Viska</a>
-        <a href="login.html?next=index.html&mode=register"
-            class="rounded-full bg-maroon px-5 py-3 text-sm font-bold text-white">MULAI</a>
+        <a id="navbar-start-button" href="login.html?next=index.html&mode=register" aria-hidden="true"
+            class="hidden rounded-full bg-maroon px-5 py-3 text-sm font-bold text-white">MULAI</a>
+    </nav>
+    <header id="hero-section"
+        class="mx-auto grid min-h-screen max-w-6xl gap-10 px-5 pb-12 pt-32 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
+        <div>
+            <p class="text-sm font-bold uppercase tracking-[.22em] text-gold">Sinau · Njaga · Merawat</p>
+            <h1 class="mt-4 max-w-3xl font-serif text-5xl font-black leading-[.96] sm:text-7xl">Basa Jawa tumbuh
+                dalam setiap <span class="text-maroon">kalimat.</span></h1>
+            <p class="mt-6 max-w-xl text-lg leading-8 text-[#664d42]">Viska adalah ruang belajar yang menyenangkan
+                lewat latihan yang ringan namun bermakna.</p>
+            <div class="mt-8 flex flex-wrap gap-3"><a href="login.html?next=index.html&mode=register"
+                    class="rounded-full bg-soga px-6 py-4 font-bold text-white">MULAI</a><a
+                    href="login.html?next=index.html"
+                    class="rounded-full border-2 border-soga px-6 py-4 font-bold text-soga">SUDAH PUNYA AKUN</a>
+            </div>
+        </div>
+        <div class="relative mx-auto w-full max-w-md overflow-hidden rounded-[2.5rem] border-8 border-ivory shadow-2xl">
+            <div class="batik h-80"></div>
+            <div class="absolute inset-x-7 bottom-7 rounded-3xl bg-ivory p-6">
+                <p class="text-10xs font-bold uppercase tracking-[.18em] text-gold">Piwulang dina iki</p>
+                <p class="mt-2 font-serif text-2xl font-black text-maroon">“Alon alon kelakon, timbang banter
+                    ngageti nanging ora dadi.”</p>
+                <p class="mt-2 text-sm text-[#664d42]">Pelan-pelan tapi terlaksana,daripada tergesa-gesa tapi gagal.
+                </p>
+            </div>
+        </div>
     </header>
     <main>
-        <section
-            class="mx-auto grid min-h-[calc(100svh-84px)] max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
-            <div>
-                <p class="text-sm font-bold uppercase tracking-[.22em] text-gold">Sinau · Njaga · Merawat</p>
-                <h1 class="mt-4 max-w-3xl font-serif text-5xl font-black leading-[.96] sm:text-7xl">Basa Jawa tumbuh
-                    dalam setiap <span class="text-maroon">kalimat.</span></h1>
-                <p class="mt-6 max-w-xl text-lg leading-8 text-[#664d42]">Viska adalah ruang belajar yang menyenangkan
-                    lewat latihan yang ringan namun bermakna.</p>
-                <div class="mt-8 flex flex-wrap gap-3"><a href="login.html?next=index.html&mode=register"
-                        class="rounded-full bg-soga px-6 py-4 font-bold text-white">MULAI</a><a
-                        href="login.html?next=index.html"
-                        class="rounded-full border-2 border-soga px-6 py-4 font-bold text-soga">SUDAH PUNYA AKUN</a>
-                </div>
-            </div>
-            <div
-                class="relative mx-auto w-full max-w-md overflow-hidden rounded-[2.5rem] border-8 border-ivory shadow-2xl">
-                <div class="batik h-80"></div>
-                <div class="absolute inset-x-7 bottom-7 rounded-3xl bg-ivory p-6">
-                    <p class="text-10xs font-bold uppercase tracking-[.18em] text-gold">Piwulang dina iki</p>
-                    <p class="mt-2 font-serif text-2xl font-black text-maroon">“Alon alon kelakon, timbang banter
-                        ngageti nanging ora dadi.”</p>
-                    <p class="mt-2 text-sm text-[#664d42]">Pelan-pelan tapi terlaksana,daripada tergesa-gesa tapi gagal.
-                    </p>
-                </div>
-            </div>
-        </section>
-        <!-- SECTION 1: PELAJARAN (KIRI) -->
-        <section id="fitur-pelajaran" class="flex min-h-[calc(100svh-84px)] items-center border-t border-[#ead9b6] bg-ivory py-12 overflow-hidden">
+        <!-- SECTION 1: PELAJARAN -->
+        <section id="fitur-pelajaran"
+            class="flex min-h-[calc(100svh-84px)] items-center border-t border-[#ead9b6] bg-ivory py-12 overflow-hidden">
             <div class="mx-auto max-w-6xl px-5 sm:px-8">
                 <div class="grid gap-10 lg:grid-cols-12 lg:items-center">
 
-                    <!-- Card Kiri -->
                     <div class="lg:col-span-7">
                         <article
                             class="feature-card group relative overflow-hidden rounded-[2.5rem] border-2 border-[#ead9b6] p-8 sm:p-10 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
@@ -149,7 +188,6 @@
                                 </p>
                             </div>
 
-                            <!-- Visual Accent Card Footer -->
                             <div class="mt-8 flex items-center gap-3 border-t border-[#ead9b6]/60 pt-6">
                                 <span class="flex h-3 w-3 rounded-full bg-emerald-500 animate-pulse"></span>
                                 <span class="text-sm font-bold text-maroon">Interaktif & Terstruktur</span>
@@ -157,7 +195,6 @@
                         </article>
                     </div>
 
-                    <!-- Teks/Sapaan Kanan -->
                     <div class="lg:col-span-5 lg:pl-6">
                         <p class="text-sm font-bold uppercase tracking-[.2em] text-maroon">Ruang Belajar Viska</p>
                         <h2 class="mt-3 font-serif text-4xl font-black text-ink sm:text-5xl">Mulai dari fondasi terbaik.
@@ -171,19 +208,20 @@
         </section>
 
 
-        <!-- SECTION 2: KAMUS UNGGAH-UNGGUH -->
-        <section id="fitur-kamus" class="flex min-h-[calc(100svh-84px)] items-center border-t border-[#ead9b6] bg-[#f8f3ea] py-12 overflow-hidden">
+        <!-- SECTION 2: KAMUS-->
+        <section id="fitur-kamus"
+            class="flex min-h-[calc(100svh-84px)] items-center border-t border-[#ead9b6] bg-[#f8f3ea] py-12 overflow-hidden">
             <div class="mx-auto max-w-6xl px-5 sm:px-8">
                 <div class="grid gap-10 lg:grid-cols-12 lg:items-center">
 
-                    <!-- Teks Sapaan  -->
                     <div class="order-2 lg:order-1 lg:col-span-5 lg:pr-6">
                         <p class="text-sm font-bold uppercase tracking-[.2em] text-gold">Kosakata & Tata Krama</p>
-                        <h2 class="mt-3 font-serif text-4xl font-black text-ink sm:text-5xl">Pahami tiap tingkatan kata.</h2>
-                        <p class="mt-4 leading-7 text-[#664d42]">Eksplorasi perbedaan Ngoko, Krama Madya, hingga Krama Inggil dengan penjelasan yang mudah dipahami.</p>
+                        <h2 class="mt-3 font-serif text-4xl font-black text-ink sm:text-5xl">Pahami tiap tingkatan kata.
+                        </h2>
+                        <p class="mt-4 leading-7 text-[#664d42]">Eksplorasi perbedaan Ngoko, Krama Madya, hingga Krama
+                            Inggil dengan penjelasan yang mudah dipahami.</p>
                     </div>
 
-                    <!-- Card -->
                     <div class="order-1 lg:order-2 lg:col-span-7">
                         <article
                             class="feature-card group relative overflow-hidden rounded-[2.5rem] border-2 border-gold/40 p-8 sm:p-10 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
@@ -193,8 +231,10 @@
                                 <span
                                     class="inline-block rounded-full bg-gold/15 px-4 py-1 text-xs font-bold uppercase tracking-wider text-gold">Referensi
                                     Lengkap</span>
-                                <h3 class="mt-3 font-serif text-3xl font-black text-maroon sm:text-4xl">Kamus Undhak usuk basa</h3>
-                                <p class="mt-4 text-lg leading-relaxed text-[#664d42]">Memahami Arti Kata dan tata krama berbahasa Jawa untuk berkomunikasi dengan santun kepada siapa saja.</p>
+                                <h3 class="mt-3 font-serif text-3xl font-black text-maroon sm:text-4xl">Kamus Undhak
+                                    usuk basa</h3>
+                                <p class="mt-4 text-lg leading-relaxed text-[#664d42]">Memahami Arti Kata dan tata krama
+                                    berbahasa Jawa untuk berkomunikasi dengan santun kepada siapa saja.</p>
                             </div>
 
                             <div class="mt-8 flex items-center gap-3 border-t border-[#ead9b6]/60 pt-6">
@@ -210,21 +250,23 @@
 
 
         <!-- SECTION 3: RANK -->
-        <section id="fitur-rank" class="flex min-h-[calc(100svh-84px)] items-center border-y border-[#ead9b6] bg-ivory py-12 overflow-hidden">
+        <section id="fitur-rank"
+            class="flex min-h-[calc(100svh-84px)] items-center border-y border-[#ead9b6] bg-ivory py-12 overflow-hidden">
             <div class="mx-auto max-w-6xl px-5 sm:px-8">
                 <div class="grid gap-10 lg:grid-cols-12 lg:items-center">
 
-                    <!-- Card -->
                     <div class="lg:col-span-7">
                         <article
                             class="feature-card group relative overflow-hidden rounded-[2.5rem] border-2 border-terracotta/30 p-8 sm:p-10 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-                            style="--card-image: url('./aset/batik_tambal.png');">                           
+                            style="--card-image: url('./aset/batik_tambal.png');">
 
                             <div class="mt-6">
                                 <span
-                                    class="inline-block rounded-full bg-terracotta/10 px-4 py-1 text-xs font-bold uppercase tracking-wider text-terracotta">Papan Score</span>
+                                    class="inline-block rounded-full bg-terracotta/10 px-4 py-1 text-xs font-bold uppercase tracking-wider text-terracotta">Papan
+                                    Score</span>
                                 <h3 class="mt-3 font-serif text-3xl font-black text-maroon sm:text-4xl">Papan Score</h3>
-                                <p class="mt-4 text-lg leading-relaxed text-[#664d42]">Uji kemampuanmu, kumpulkan XP dari latihan harian, dan naikkan posisimu dari Prajurit hingga Raja Jawa!</p>
+                                <p class="mt-4 text-lg leading-relaxed text-[#664d42]">Uji kemampuanmu, kumpulkan XP
+                                    dari latihan harian, dan naikkan posisimu dari Prajurit hingga Raja Jawa!</p>
                             </div>
 
                             <div class="mt-8 flex items-center gap-3 border-t border-[#ead9b6]/60 pt-6">
@@ -234,18 +276,19 @@
                         </article>
                     </div>
 
-                    <!-- Teks Sapaan -->
                     <div class="lg:col-span-5 lg:pl-6">
                         <p class="text-sm font-bold uppercase tracking-[.2em] text-terracotta">Kompetisi Seru</p>
                         <h2 class="mt-3 font-serif text-4xl font-black text-ink sm:text-5xl">Tunjukkan progres
                             belajarmu.</h2>
-                        <p class="mt-4 leading-7 text-[#664d42]">Tantang diri sendiri dan lihat sejauh mana perkembangan kemampuan Basa Jawa-mu dibanding lainnya.</p>
+                        <p class="mt-4 leading-7 text-[#664d42]">Tantang diri sendiri dan lihat sejauh mana perkembangan
+                            kemampuan Basa Jawa-mu dibanding lainnya.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="mx-auto grid min-h-[calc(100svh-84px)] max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
+        <section
+            class="mx-auto grid min-h-[calc(100svh-84px)] max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
             <div class="feature-card--dark order-2 rounded-[2rem] p-8 text-ivory sm:p-10 lg:order-2"
                 style="--card-image: url('./aset/batik_tambal.png');">
                 <p class="text-sm font-bold uppercase tracking-[.2em] text-[#e9c46a]">Roda Jawa</p>
@@ -257,7 +300,8 @@
                 <p class="text-sm font-bold uppercase tracking-[.2em] text-gold">Lebih dari latihan</p>
                 <h2 class="mt-3 font-serif text-4xl font-black">RODA JAWA</h2>
                 <div class="mt-7 space-y-4">
-                    <p class="mt-1 text-sm leading-6 text-[#664d42]">Mari uji pemahaman Basa Jawa-mu lewat kuis acak yang seru di Roda Jawa dan raih koin serta pengali poin terbanyak!</p>
+                    <p class="mt-1 text-sm leading-6 text-[#664d42]">Mari uji pemahaman Basa Jawa-mu lewat kuis acak
+                        yang seru di Roda Jawa dan raih koin serta pengali poin terbanyak!</p>
                 </div>
             </div>
         </section>
@@ -277,6 +321,27 @@
     <footer class="border-t border-[#ead9b6] px-5 py-8 text-center text-sm text-[#664d42]">© 2026 Viska · Sinau ,
         merawat budaya. Made by <a href="https://github.com/Alfayed7718/VISKA" target="_blank"
             class="text-leaf hover:underline">Dody Al Fayed</a></footer>
+    <script>
+        const heroSection = document.getElementById('hero-section');
+        const siteNavbar = document.querySelector('.site-navbar');
+        const navbarStartButton = document.getElementById('navbar-start-button');
+
+        function setNavbarStartButton(visible) {
+            navbarStartButton.classList.toggle('hidden', !visible);
+            navbarStartButton.classList.toggle('inline-flex', visible);
+            navbarStartButton.setAttribute('aria-hidden', String(!visible));
+        }
+
+        function updateNavbarStartButton() {
+            const heroBottom = heroSection.getBoundingClientRect().bottom;
+            const navbarBottom = siteNavbar.getBoundingClientRect().bottom;
+            setNavbarStartButton(heroBottom <= navbarBottom);
+        }
+
+        window.addEventListener('scroll', updateNavbarStartButton, { passive: true });
+        window.addEventListener('resize', updateNavbarStartButton);
+        updateNavbarStartButton();
+    </script>
 </body>
 
 </html>
