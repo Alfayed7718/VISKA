@@ -1,3 +1,5 @@
 Viska hadir sebagai ruang belajar digital interaktif yang dirancang untuk membantu siapa saja mempelajari Bahasa Jawa mulai dari tingkatan Ngoko, Krama Madya, hingga Krama Inggil dengan cara yang seru, modern, dan menyenangkan.
 
 Menggabungkan konsep gamifikasi yang adiktif dengan kekayaan tradisi, Viska menawarkan pengalaman belajar bertahap yang fleksibel. Di sini, pengguna tidak hanya belajar tata bahasa (unggah-ungguh) melalui modul interaktif dan kamus praktis, dengan fitur utama yaitu Roda Jawa yang menguji keberanian dengan soal acak, mengumpulkan koin serta XP, hingga bersaing meraih gelar kehormatan di Papan Rank. Bersama Viska, merawat dan memelihara budaya Jawa menjadi perjalanan harian yang ringan, bermakna, dan penuh apresiasi.
+
+Saat pengguna masuk pengguna akan diperlihatkan dengan tampilan dashboard utama yang isinya adalah penjelasan singkat fitur fitur yang ada di Viska kemudian pengguna diwajibkan login atau mendaftar sebelum bisa masuk ke dalam Viska setelah masuk Viska pengguna bisa menggunakan semua fitur di Viska.
