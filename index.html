@@ -828,6 +828,7 @@
       document.addEventListener(eventName, startBgm, { once: true, passive: true });
     });
 
+    // Memutar ulang sfx.
     function playSfx(audio) {
       if (!audio) return;
       audio.pause();
@@ -835,24 +836,28 @@
       audio.play().catch(() => { });
     }
 
+    // Menerima data sesi pengguna setelah autentikasi berhasil.
     window.addEventListener('viska-auth-ready', function (event) {
       currentUser = event.detail;
       hydrateAuthenticatedUser();
       renderRanking();
     });
 
+    // Memastikan aksi yang membutuhkan akun hanya berjalan untuk pengguna yang masuk.
     function ensureLoggedIn() {
       if (currentUser) return true;
       window.location.href = 'login.html?next=index.html';
       return false;
     }
 
+    // Mengamankan teks sebelum dimasukkan ke HTML dinamis.
     function escapeHtml(value) {
       const element = document.createElement('div');
       element.textContent = value;
       return element.innerHTML;
     }
 
+    // Menyinkronkan XP, koin, rank, dan progres pengguna ke penyimpanan.
     function syncCurrentUserToRanking() {
       if (!currentUser) return;
       currentUser.xp = score;
@@ -863,8 +868,10 @@
       loadRankings();
     }
 
+    // Menentukan detail rank dan target XP berikutnya.
     function rankFor(xp) { return xp >= 1001 ? { name: 'Raja Jawa', level: 3, min: 1001, next: null } : xp >= 501 ? { name: 'Prajurit', level: 2, min: 501, next: 1001 } : { name: 'Mangarah Tari', level: 1, min: 0, next: 501 }; }
 
+    // Menampilkan modal perayaan ketika rank pengguna meningkat.
     function showRankUpModal(rank) {
       const titleImages = { 'Mangarah Tari': 'aset/logo_rank_mangarah_tari.png', Prajurit: 'aset/logo_rank_prajurit.png', 'Raja Jawa': 'aset/logo_rank_raja_jawa.png' };
       document.getElementById('rank-up-image').src = titleImages[rank.name];
@@ -875,12 +882,14 @@
       document.getElementById('rank-up-modal').classList.add('flex');
     }
 
+    // Menutup modal kenaikan rank.
     function closeRankUpModal() {
       const modal = document.getElementById('rank-up-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
 
+    // Menampilkan notifikasi umum dengan variasi status.
     function showNotification({ label = 'Pemberitahuan', title = 'Berhasil', message = '', type = 'success' }) {
       const modal = document.getElementById('notification-modal');
       const icon = document.getElementById('notification-icon');
@@ -893,17 +902,20 @@
       modal.classList.add('flex');
     }
 
+    // Menutup modal notifikasi.
     function closeNotificationModal() {
       const modal = document.getElementById('notification-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
 
+    // Memuat data papan peringkat dari layanan autentikasi.
     function loadRankings() {
       rankings = ViskaAuth.getRankings();
       renderRanking();
     }
 
+    // Menyiapkan kartu rank dan menyesuaikan posisi.
     function updateRankShowcase(activeRank) {
       const carousel = document.getElementById('rank-showcase-carousel');
       if (!carousel || !activeRank) return;
@@ -922,6 +934,7 @@
       updateRankShowcase(currentUser ? rankFor(currentUser.xp).name : null);
     });
 
+    // Render daftar pemain sesuai rank.
     function renderRanking() {
       const rankingList = document.getElementById('ranking-list');
       if (!rankingList) return;
@@ -954,16 +967,18 @@
       }).join('') || '<p class="rounded-2xl bg-white p-5 text-center text-slate-400">Belum ada pengguna lain di ruang Score ini.</p>';
     }
 
-    // Item Buff Khusus Spin Mode
+    // Item Spin Mode
     let itemSkipCount = 0;
     let itemShieldCount = 0;
 
+    // Menyalin jumlah item Spin dari data pengguna ke status halaman.
     function applySpinInventory(user) {
       itemSkipCount = Math.max(0, Number(user?.spinSkipCount) || 0);
       itemShieldCount = Math.max(0, Number(user?.spinShieldCount) || 0);
       updateSpinStats();
     }
 
+    // Menggunakan satu item Spin dan memperbarui inventaris pada tampilan.
     async function consumeSpinItem(item) {
       try {
         currentUser = ViskaAuth.useSpinItem(item);
@@ -1143,6 +1158,7 @@
       if (rankIncreased) showRankUpModal(rank);
     }
 
+    // Memperbarui XP, koin, multiplier, dan tombol klaim Roda Jawa.
     function updateSpinStats() {
       const multiplier = 1 + (spinStreak * 0.25);
       document.getElementById('spin-points').textContent = spinPoints;
@@ -1165,6 +1181,7 @@
       updateHeaderStats();
     }
 
+    // Menampilkan tab yang dipilih dan menyembunyikan tab lainnya.
     function switchTab(tab) {
       if (!ensureLoggedIn()) return;
       setGameplayNavigation(false);
@@ -1191,6 +1208,7 @@
     // --- 3. KAMUS ---
     function toggleLanguageGuide() { document.getElementById('language-guide').classList.toggle('hidden'); }
 
+    // Menyaring dan menampilkan entri kamus berdasarkan kata pencarian.
     function renderDictionary() {
       const query = document.getElementById('search-input').value.toLowerCase().trim();
       const terms = { 'Ngoko': 'ngoko', 'Krama Madya': 'madya', 'Krama Inggil': 'inggil' };
@@ -1216,6 +1234,7 @@
 
     let unlockedLessons = [0];
 
+    // Memuat level yang telah terbuka untuk pengguna aktif.
     function loadLessonProgress() {
       const savedLevels = Array.isArray(currentUser?.unlockedLessons) ? currentUser.unlockedLessons : [0];
       unlockedLessons = [...new Set([0, ...savedLevels.filter(level => Number.isInteger(level) && level >= 0 && level < lessons.length)])].sort((a, b) => a - b);
@@ -1244,12 +1263,14 @@
       showQuestion();
     }
 
+    // Mengakhiri lesson dan mengembalikan tampilan peta belajar.
     function exitLesson() {
       document.getElementById('quiz-area').classList.add('hidden');
       document.getElementById('learning-map').classList.remove('hidden');
       setGameplayNavigation(false);
     }
 
+    // Menampilkan soal, pilihan jawaban, dan progres lesson saat ini.
     function showQuestion() {
       const q = lessons[lessonIndex][questionIndex];
       answered = false;
@@ -1271,6 +1292,7 @@
       document.getElementById('quiz-next').classList.add('hidden');
     }
 
+    // Memeriksa jawaban kuis serta menampilkan umpan baliknya.
     function answerQuiz(value) {
       if (answered) return;
       answered = true;
@@ -1295,6 +1317,7 @@
       document.getElementById('quiz-next').classList.remove('hidden');
     }
 
+    // Berpindah ke soal berikutnya atau menyelesaikan lesson.
     function nextQuestion() {
       if (hearts <= 0) {
         showNotification({ label: 'Level gagal', title: 'Nyawamu habis', message: 'Coba lagi ya kamu pasti bisa menyelesaikannya!', type: 'error' });
@@ -1321,6 +1344,7 @@
       }
     }
 
+    // Membuat tombol level berdasarkan status level yang telah terbuka.
     function renderLearningMap() {
       const mapContainer = document.getElementById('level-buttons-container');
       if (!mapContainer) return;
@@ -1369,6 +1393,7 @@
       wheel.classList.remove('wheel-spinning');
       document.getElementById('spin-btn').disabled = true;
 
+      // Menjalankan animasi roda setelah metadata audio tersedia.
       const beginSpin = () => {
         const spinDuration = Number.isFinite(spinSfx.duration) && spinSfx.duration > 0 ? spinSfx.duration : 1.05;
         wheel.style.setProperty('--spin-duration', `${spinDuration}s`);
@@ -1405,6 +1430,7 @@
       else spinSfx.addEventListener('loadedmetadata', beginSpin, { once: true });
     }
 
+    // Memeriksa jawaban Roda Jawa serta menghitung hadiah atau penalti sesi.
     async function answerSpin(value) {
       if (spinAnswered) return;
       spinAnswered = true;
@@ -1441,6 +1467,7 @@
       document.getElementById('spin-next').classList.remove('hidden');
     }
 
+    // Menggunakan item Skip untuk melewati soal Roda Jawa.
     async function useSkipItem() {
       if (itemSkipCount > 0 && !spinAnswered) {
         if (!await consumeSpinItem('skip')) return;
@@ -1449,6 +1476,7 @@
       }
     }
 
+    // Mengklaim hadiah sesi Roda Jawa ke total XP dan koin pengguna.
     function cashOut() {
       if (!ensureLoggedIn()) return;
       if (!spinPoints && !spinCoins) return;
@@ -1465,6 +1493,7 @@
     }
 
     // --- 6. TOKO ---
+    // Membeli item bantuan Roda Jawa dari toko.
     async function buyItem(item) {
       if (!ensureLoggedIn()) return;
       try {
@@ -1477,6 +1506,7 @@
       } catch (error) { showNotification({ label: 'Pembelian gagal', title: 'Terjadi kendala', message: error.message, type: 'error' }); }
     }
 
+    // Membeli kosmetik profil dan langsung memasangnya.
     async function buyCosmetic(item) {
       if (!ensureLoggedIn()) return;
       const button = document.getElementById('shop-' + item);
@@ -1492,6 +1522,7 @@
       finally { button.disabled = false; renderShopButtons(); }
     }
 
+    // Menandai tombol toko untuk item yang sudah dimiliki pengguna.
     function renderShopButtons() {
       if (!currentUser) return;
       const owned = new Set([...(currentUser.ownedAvatars || []), ...(currentUser.ownedBorders || [])]);
@@ -1501,6 +1532,7 @@
       });
     }
 
+    // Menerapkan avatar dan border terpilih pada tampilan profil.
     function renderProfileCosmetics() {
       if (!currentUser) return;
       const avatarStyles = { batik: 'bg-leaf', kris: 'bg-sun', wayang: 'bg-sky' };
@@ -1520,6 +1552,7 @@
       renderProfilePickers();
     }
 
+    // Membuat pilihan avatar dan border yang dimiliki pengguna.
     function renderProfilePickers() {
       if (!currentUser) return;
       const avatarPicker = document.getElementById('avatar-picker');
@@ -1532,6 +1565,7 @@
     }
 
     // pasang kosmetik
+    // Menyimpan kosmetik avatar atau border yang dipilih pengguna.
     async function equipCosmetic(kind, value) {
       if (!currentUser) return;
       const payload = { xp: score, coins, avatar: kind === 'avatar' ? value : currentUser.avatar, avatarBorder: kind === 'border' ? value : currentUser.avatarBorder };
@@ -1543,14 +1577,17 @@
     }
 
     // --- 7. AKUN & PROFIL ---
+    // Mengarahkan pengunjung ke halaman masuk dengan tujuan kembali ke aplikasi.
     function openLoginModal() {
       window.location.href = 'login.html?next=index.html';
     }
 
+    // Menutup modal masuk jika sesi pengguna sudah tersedia.
     function closeLoginModal() {
       if (currentUser) document.getElementById('login-modal').classList.add('hidden');
     }
 
+    // Mengisi seluruh antarmuka dengan data pengguna yang telah masuk.
     function hydrateAuthenticatedUser() {
       if (!currentUser) return;
       const username = currentUser.name;
@@ -1570,6 +1607,7 @@
       loadRankings();
     }
 
+    // Mengakhiri sesi pengguna dan kembali ke halaman beranda.
     async function logout() {
       await ViskaAuth.signOut();
       currentUser = null;

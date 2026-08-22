@@ -229,6 +229,7 @@
 </head>
 
 <body>
+  <!-- Kartu autentikasi untuk masuk atau membuat akun Viska. -->
   <main class="card"><a class="logo" href="dashboard.html">Viska</a>
     <h1>Sugeng rawuh</h1>
     <p id="intro">Masuk dengan akun Viska untuk melanjutkan belajar Bahasa Jawa.</p>
@@ -242,6 +243,7 @@
     </form><a class="back" href="dashboard.html">← Kembali ke beranda</a>
   </main>
   <script>
+    // Status mode formulir dan referensi elemen antarmuka autentikasi.
     let mode = 'login';
     const form = document.querySelector('#auth-form'),
       nameInput = document.querySelector('#name'),
@@ -251,6 +253,7 @@
       submit = document.querySelector('#submit'),
       errorBox = document.querySelector('#error');
 
+    // Mengganti tampilan formulir antara mode masuk dan pendaftaran.
     document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => {
       mode = button.dataset.mode;
       document.querySelectorAll('[data-mode]').forEach(item => item.classList.toggle('active', item === button));
@@ -267,11 +270,12 @@
       errorBox.style.display = 'none';
     }));
 
-    // Tautan dari tombol "Mulai" membuka formulir pendaftaran secara langsung.
+    // Tautan dari tombol "Mulai" membuka formulir pendaftaran.
     if (new URLSearchParams(location.search).get('mode') === 'register') {
       document.querySelector('[data-mode="register"]').click();
     }
 
+    // Mengirim data autentikasi, lalu mengarahkan pengguna.
     form.addEventListener('submit', event => {
       event.preventDefault();
       errorBox.style.display = 'none';

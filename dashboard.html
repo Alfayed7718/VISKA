@@ -141,6 +141,7 @@
         <a id="navbar-start-button" href="login.html?next=index.html&mode=register" aria-hidden="true"
             class="hidden rounded-full bg-maroon px-5 py-3 text-sm font-bold text-white">MULAI</a>
     </nav>
+    <!-- Hero: pengantar aplikasi dan tombol menuju halaman autentikasi. -->
     <header id="hero-section"
         class="mx-auto grid min-h-screen max-w-6xl gap-10 px-5 pb-12 pt-32 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
         <div>
@@ -287,6 +288,7 @@
             </div>
         </section>
 
+        <!-- Fitur Roda Jawa: kuis acak dengan hadiah XP dan koin. -->
         <section
             class="mx-auto grid min-h-[calc(100svh-84px)] max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
             <div class="feature-card--dark order-2 rounded-[2rem] p-8 text-ivory sm:p-10 lg:order-2"
@@ -307,6 +309,7 @@
         </section>
 
 
+        <!-- Ajakan akhir untuk membuat akun dan mulai belajar. -->
         <section class="mx-auto flex min-h-[calc(100svh-84px)] max-w-6xl items-center px-5 py-12 sm:px-8">
             <div class="feature-card--dark w-full rounded-[2.5rem] bg-soga px-8 py-14 text-center text-ivory"
                 style="--card-image: url('./aset/batik_tambal.png');">
@@ -322,22 +325,26 @@
         merawat budaya. Made by <a href="https://github.com/Alfayed7718/VISKA" target="_blank"
             class="text-leaf hover:underline">Dody Al Fayed</a></footer>
     <script>
+        // Referensi elemen yang dipakai untuk menampilkan tombol Mulai di navbar.
         const heroSection = document.getElementById('hero-section');
         const siteNavbar = document.querySelector('.site-navbar');
         const navbarStartButton = document.getElementById('navbar-start-button');
 
+        // Mengubah visibilitas dan atribut aksesibilitas tombol Mulai di navbar.
         function setNavbarStartButton(visible) {
             navbarStartButton.classList.toggle('hidden', !visible);
             navbarStartButton.classList.toggle('inline-flex', visible);
             navbarStartButton.setAttribute('aria-hidden', String(!visible));
         }
 
+        // Menampilkan tombol Mulai setelah pengguna melewati bagian hero.
         function updateNavbarStartButton() {
             const heroBottom = heroSection.getBoundingClientRect().bottom;
             const navbarBottom = siteNavbar.getBoundingClientRect().bottom;
             setNavbarStartButton(heroBottom <= navbarBottom);
         }
 
+        // Memperbarui status tombol saat halaman discroll atau ukuran layar berubah.
         window.addEventListener('scroll', updateNavbarStartButton, { passive: true });
         window.addEventListener('resize', updateNavbarStartButton);
         updateNavbarStartButton();
