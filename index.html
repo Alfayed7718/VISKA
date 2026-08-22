@@ -294,21 +294,15 @@
 
       .rank-showcase-carousel {
         display: flex;
-        width: calc(100% + 2rem);
-        margin-left: -1rem;
+        flex-direction: column-reverse;
+        width: 100%;
         gap: .75rem;
-        overflow-x: auto;
-        scrollbar-width: none;
         padding: .25rem 0;
       }
 
-      .rank-showcase-carousel::-webkit-scrollbar {
-        display: none;
-      }
-
       .rank-showcase-carousel .rank-showcase {
-        width: 78vw;
-        flex: 0 0 78vw;
+        width: 100%;
+        flex: 0 0 auto;
       }
 
       #rank-up-modal>div {
@@ -914,20 +908,13 @@
       const carousel = document.getElementById('rank-showcase-carousel');
       if (!carousel || !activeRank) return;
       const ranks = ['Mangarah Tari', 'Prajurit', 'Raja Jawa'];
-      const activeIndex = ranks.indexOf(activeRank);
       Array.from(carousel.children).forEach((card, index) => {
         card.classList.add('rank-showcase');
         card.dataset.rank = ranks[index];
-        card.style.order = window.matchMedia('(max-width: 639px)').matches
-          ? String((index - activeIndex + 4) % 3)
-          : '';
+        card.style.order = '';
       });
       requestAnimationFrame(() => {
-        const isMobile = window.matchMedia('(max-width: 639px)').matches;
-        const activeCard = Array.from(carousel.children).find(card => card.dataset.rank === activeRank);
-        carousel.scrollLeft = isMobile && activeCard
-          ? activeCard.offsetLeft - ((carousel.clientWidth - activeCard.clientWidth) / 2)
-          : 0;
+        carousel.scrollLeft = 0;
       });
     }
 
